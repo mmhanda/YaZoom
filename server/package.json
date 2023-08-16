@@ -3,12 +3,14 @@
   "version": "1.0.0",
   "description": "yaZoom",
   "main": "server.js",
+  "type": "modules",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Mohammed Handa",
   "license": "MIT",
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.18.2",
     "socket.io": "^4.7.2",
     "twilio": "^4.15.0",
