@@ -1,1 +1,43 @@
+.env
+
+# dependencies
+frontend/node_modules
+frontend/.pnp
+frontend/.pnp.js
+
+# testing
+frontend/coverage
+
+# production
+frontend/build
+
+# misc
+frontend/.DS_Store
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+frontend/npm-debug.log*
+frontend/yarn-debug.log*
+frontend/yarn-error.log*
+
+# dependencies
 server/node_modules
+server/.pnp
+server/.pnp.js
+
+# testing
+server/coverage
+
+# production
+server/build
+
+# misc
+server/.DS_Store
+server/.env.local
+server/.env.development.local
+server/.env.test.local
+server/.env.production.local
+server/npm-debug.log*
+server/yarn-debug.log*
+server/yarn-error.log*
