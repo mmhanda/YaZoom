@@ -30,11 +30,20 @@ const JoinRoomContent = (props) => {
   );
 };
 
-const mapActionsToProps = (dispatch) => {
+const mapStoreStateToProps = (state) => {
   return {
-    // setConnectOnlyWithAudio: (OnlyWithAudio) =>
-    //   dispatch(setConnectOnlyWithAudio(OnlyWithAudio)),
+    ...state,
   };
 };
 
-export default connect(mapActionsToProps)(JoinRoomContent);
+const mapActionsToProps = (dispatch) => {
+  return {
+    setConnectOnlyWithAudio: (OnlyWithAudio) =>
+      dispatch(setConnectOnlyWithAudio(OnlyWithAudio)),
+  };
+};
+
+export default connect(
+  mapStoreStateToProps,
+  mapActionsToProps
+)(JoinRoomContent);

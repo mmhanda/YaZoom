@@ -16,7 +16,7 @@ const reducer = (state = initialState, action) => {
     case Actions.SET_CONNECT_ONLY_WITH_AUDIO:
       return {
         ...state,
-        connectOnlyWithAudio: action.onlyWithAudio,
+        connectOnlyWithAudio: action.OnlyWithAudio,
       };
     default:
       return state;
