@@ -1,5 +1,4 @@
 import React from 'react';
-import { createRoot } from 'react-dom/client';
 import { Provider } from 'react-redux';
 import { store } from './store/store';
 import App from './App';
@@ -9,7 +8,6 @@ import JoinRoomPage from './JoinRoomPage/JoinRoomPage';
 import RoomPage from './RoomPage/RoomPage';
 import IntroductionPage from './IntroductionPage/IntroductionPage';
 import ReactDOM from 'react-dom/client';
-
 
 const router = createBrowserRouter(
   createRoutesFromElements(
