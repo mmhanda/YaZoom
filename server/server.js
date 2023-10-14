@@ -9,7 +9,7 @@ const app = express();
 
 const server = http.createServer(app);
 
-app.use(cors()); // no specified port to allow every one to connect
+app.use(cors()); // no specified port the cors middleware allow every one to connect it just for security reason
 
 const io = require('socket.io')(server, {
   cors: {
