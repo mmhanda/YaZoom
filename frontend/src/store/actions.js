@@ -20,6 +20,7 @@ export const setConnectOnlyWithAudio = (OnlyWithAudio) => {
 };
 
 export const setIdentity = (identity) => {
+  console.log("setIdentity");
   return {
     type: Actions.SET_IDENTITY,
     identity,
@@ -27,6 +28,7 @@ export const setIdentity = (identity) => {
 };
 
 export const setRoomId = (roomId) => {
+  console.log("setIdentity");
   return {
     type: Actions.SET_ROOM_ID,
     roomId,

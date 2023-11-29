@@ -20,7 +20,7 @@ const JoinRoomContent = (props) => {
   const { isRoomHost, connectOnlyWithAudio } = useSelector(
     (state) => state.app
   );
-  const { setConnectOnlyWithAudio } = props;
+  const { setConnectOnlyWithAudio, setIdentity, setRoomId } = props;
   const navigate = useNavigate();
 
   const join_room = async () => {
@@ -28,6 +28,7 @@ const JoinRoomContent = (props) => {
     console.log(response);
     const { roomExists, full } = response;
 
+    setRoomId(roomIdValue);
     if (roomExists) {
       if (full) {
         setError("Meeting is Full!, try again later");
@@ -43,6 +44,7 @@ const JoinRoomContent = (props) => {
   }
 
   const handelJoinRoom = async () => {
+    setIdentity(nameValue);
     if (isRoomHost) {
       create_room();
     } else {
@@ -69,26 +71,15 @@ const JoinRoomContent = (props) => {
   );
 };
 
-const mapStoreStateToProps = (state) => {
-  return {
-    ...state,
-  };
-};
-
 const mapActionsToProps = (dispatch) => {
   return {
-    setConnectOnlyWithAudio: (OnlyWithAudio) =>
-      dispatch(setConnectOnlyWithAudio(OnlyWithAudio)),
-    setIdentityAction: (identity) => {
-      dispatch(setIdentity(identity));
-    },
-    setRoomIdAction: (roomId) => {
-      dispatch(setRoomId(roomId));
-    }
+    setIdentity: (identity) => dispatch(setIdentity(identity)),
+    setRoomId: (roomId) => dispatch(setRoomId(roomId)),
+    setConnectOnlyWithAudio: (OnlyWithAudio) => dispatch(setConnectOnlyWithAudio(OnlyWithAudio)),
   };
 };
 
 export default connect(
-  mapStoreStateToProps,
-  mapActionsToProps
+  null,
+  mapActionsToProps,
 )(JoinRoomContent);
