@@ -4,10 +4,12 @@ import { useSelector } from "react-redux";
 import OnlyWithAudioCheckBox from "./OnlyWithAudioCheckBox";
 import { setConnectOnlyWithAudio } from "../store/actions";
 import { connect } from "react-redux";
+import ErrorMsg from "./ErrorMsg";
 
 const JoinRoomContent = (props) => {
   const [roomIdValue, setRoomIdValue] = useState("");
   const [nameValue, setNameValue] = useState("");
+  const [ErrorMsg, setErrorMsg] = useState("");
   const { isRoomHost, connectOnlyWithAudio } = useSelector(
     (state) => state.app
   );
@@ -26,6 +28,7 @@ const JoinRoomContent = (props) => {
         setConnectOnlyWithAudio={setConnectOnlyWithAudio}
         connectOnlyWithAudio={connectOnlyWithAudio}
       />
+      <ErrorMsg ErrorMsg={ErrorMsg} />
     </>
   );
 };
