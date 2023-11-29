@@ -2,18 +2,26 @@ import "./RoomPage.css";
 import ParticipantsSection from "./ParticipantsSection/ParticipantsSection";
 import ChatSection from "./ChatSection/ChatSection";
 import VideoSection from "./VideoSection/VideoSection";
+import RoomLabel from "./RoomLabel";
+import { connect } from 'react-redux';
 
-const RoomPage = () => {
+const RoomPage = ({ roomId }) => {
   console.log("pushToJoinRoomPageAsHost");
 
   return (
     <div className="room_container">
       <ParticipantsSection />
-      <ChatSection />
       <VideoSection />
-      RoomPage
+      <ChatSection />
+      <RoomLabel roomId={roomId} />
     </div>
   );
 };
 
-export default RoomPage;
+const mapStoreStateToProps = (state) => {
+  return {
+    ...state,
+  };
+}
+
+export default connect(mapStoreStateToProps)(RoomPage);

@@ -2,8 +2,8 @@ import React from 'react';
 
 const ChatSection = () => {
   return (
-    <div>
-
+    <div className='chat_section_container'>
+      ChatSection
     </div>
   );
 };
