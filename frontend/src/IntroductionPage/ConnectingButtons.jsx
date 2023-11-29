@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 const ConnectingButtons = () => {
 
   const navigate = useNavigate();
-  
+
   const pushToJoinRoomPage = () => {
     navigate('/join-room');
   }

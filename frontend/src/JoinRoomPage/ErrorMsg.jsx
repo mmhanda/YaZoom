@@ -1,7 +1,7 @@
-const ErrorMsg = ({ ErrorMsg }) => {
+const ErrorMsg = (Errormsg) => {
   return (
     <div className='error_message_container'>
-      {ErrorMsg && (<p className='error_message_paragraph' > {ErrorMsg} </p>)}
+      {Errormsg && (<p className='error_message_paragraph' > {Errormsg.ErrorMsg} </p>)}
     </div>
   );
 };

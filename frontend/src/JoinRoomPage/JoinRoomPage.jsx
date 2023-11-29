@@ -9,17 +9,17 @@ import JoinRoomContent from "./JoinRoomContent";
 const JoinRoomPage = (props) => {
   const { setIsRoomHostAction } = props;
   const search = useLocation().search;
-  let [isRoomHost, setIsRoomHost] = useState(false)
 
   useEffect(() => {
-    setIsRoomHost(new URLSearchParams(search).get("host"));
-    if (isRoomHost) {
+    const isHost = new URLSearchParams(search).get("host");
+    if (isHost) {
       setIsRoomHostAction(true);
     } else {
       setIsRoomHostAction(false);
     }
   }, [setIsRoomHostAction, search]);
 
+  const isRoomHost = new URLSearchParams(search).get("host");
   return (
     <div className="join_room_page_container">
       <div className="join_room_page_panel">

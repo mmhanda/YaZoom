@@ -4,6 +4,7 @@ const initialState = {
   identity: "",
   isRoomHost: false,
   connectOnlyWithAudio: false,
+  roomId: '',
 };
 
 const reducer = (state = initialState, action) => {
@@ -18,6 +19,16 @@ const reducer = (state = initialState, action) => {
         ...state,
         connectOnlyWithAudio: action.OnlyWithAudio,
       };
+    case Actions.SET_ROOM_ID:
+      return {
+        ...state,
+        roomId: action.roomId,
+      }
+    case Actions.SET_IDENTITY:
+      return {
+        ...state,
+        identity: action.identity,
+      }
     default:
       return state;
   }
