@@ -1,9 +1,10 @@
+import "./RoomPage.css";
 
 const RoomPage = () => {
   console.log("pushToJoinRoomPageAsHost");
 
   return (
-    <div>
+    <div className="room">
       RoomPage
     </div>
   );

@@ -17,6 +17,8 @@ const JoinRoomContent = (props) => {
   const [roomIdValue, setRoomIdValue] = useState("");
   const [nameValue, setNameValue] = useState("");
   const [Error, setError] = useState("");
+  const [roomExists, setRoomExists] = useState("");
+  const [full, setFull] = useState("");
   const { isRoomHost, connectOnlyWithAudio } = useSelector(
     (state) => state.app
   );
@@ -24,9 +26,14 @@ const JoinRoomContent = (props) => {
   const navigate = useNavigate();
 
   const join_room = async () => {
-    const response = await getRoomExists(roomIdValue);
-    console.log(response);
-    const { roomExists, full } = response;
+    try {
+      const response = await getRoomExists(roomIdValue);
+      const { roomExists, full } = response;
+      roomExists(setRoomExists);
+      setFull(full);
+    } catch (error) {
+      console.log(error);
+    }
 
     setRoomId(roomIdValue);
     if (roomExists) {
