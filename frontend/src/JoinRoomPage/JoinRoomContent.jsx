@@ -47,7 +47,10 @@ const JoinRoomContent = (props) => {
     }
   }
   const create_room = () => {
-    navigate('/room');
+    if (nameValue)
+      navigate('/room');
+    else
+      setError("Name Required");
   }
 
   const handelJoinRoom = async () => {
@@ -55,7 +58,10 @@ const JoinRoomContent = (props) => {
     if (isRoomHost) {
       create_room();
     } else {
-      await join_room();
+      if (nameValue && roomIdValue)
+        await join_room();
+      else
+        setError("All the Fields Required");
     }
   }
 
