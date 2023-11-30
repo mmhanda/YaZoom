@@ -14,7 +14,9 @@ const Participants = ({ app }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    setData([app]);
+    setInterval(() => {
+      setData([app]);
+    }, 100);
   }, [app]);
 
   return (
@@ -24,7 +26,7 @@ const Participants = ({ app }) => {
           key={participant.identity}
           LastItem={data.length === index + 1}
           participant={participant}
-          identity={participant.identity}
+          identity={participant.identity ? participant.identity : 'unknown'}
         />
       ))}
     </div>

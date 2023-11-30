@@ -29,7 +29,7 @@ const JoinRoomContent = (props) => {
     try {
       const response = await getRoomExists(roomIdValue);
       const { roomExists, full } = response;
-      roomExists(setRoomExists);
+      setRoomExists(roomExists);
       setFull(full);
     } catch (error) {
       console.log(error);

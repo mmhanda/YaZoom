@@ -56,12 +56,33 @@ const handleCreateNewRoom = (data, clientId) => {
   io.to(clientId).emit('room-id', { roomId });
   io.sockets.sockets.get(clientId).join(roomId);
   rooms.push(newRoom);
-  io.to(clientId).emit('room-update', { connectedUser: newRoom.connectedUser });
+  io.to(roomId).emit('room-update', { connectedUser: newRoom.connectedUser });
+}
+
+const handelJoinRoom = (data, clientId) => {
+  const { identity, roomId } = data;
+  const newUser = {
+    identity,
+    id: uuidv4(),
+    socketId: clientId,
+    roomId,
+  }
+
+  const room = rooms.find(room => room.id === roomId);
+  if (room) {
+    room.connectedUser.push(newUser);
+    io.sockets.sockets.get(clientId).join(roomId);
+    console.log(room.connectedUser);
+    io.to(roomId).emit('room-update', { connectedUser: room.connectedUser });
+  }
 }
 
 io.on("connection", (socket) => {
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket.id);
+  })
+  socket.on('join-room', (data) => {
+    handelJoinRoom(data, socket.id);
   })
 })
 

@@ -16,12 +16,14 @@ export const createRoom = async (identity) => {
     identity,
   }
   socket.emit('create-room', data);
-  socket.once('room-id', (data) => {
+  socket.on('room-id', (data) => {
     const { roomId } = data;
     store.dispatch(setRoomId(roomId));
   })
   socket.on('room-update', (data) => {
+    console.log("room-update");
     const { connectedUser } = data;
+    console.log(connectedUser);
     store.dispatch(setParticipants(connectedUser));
   });
 }
