@@ -73,6 +73,15 @@ const handelJoinRoom = (data, socketId) => {
   room.connectedUsers = [...room.connectedUsers, newUser];
   socketId.join(room.id);
   connectedUsers = [...connectedUsers, newUser];
+  room.connectedUsers.forEach((user) => {
+    if (user.socketId !== socketId.id) {
+      const data = {
+        ConnUserSocketId: socketId.id,
+      };
+      io.to(user.socketId).emit('conn-prepare', { data });
+    }
+  });
+
   io.to(room.id).emit('room-update', { connectedUsers: room.connectedUsers });
 }
 
@@ -90,6 +99,13 @@ const handelDisconnect = (socket) => {
   }
 }
 
+const signalingHandler = (data, socket) => {
+  const { ConnUserSocketId, signal } = data;
+
+  const signalingData = { signal, ConnUserSocketId: socket.id }
+  io.to(ConnUserSocketId).emit("conn-signal", signalingData);
+}
+
 io.on("connection", (socket) => {
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
@@ -99,6 +115,9 @@ io.on("connection", (socket) => {
   })
   socket.on("disconnect", () => {
     handelDisconnect(socket);
+  })
+  socket.on('conn-signal', (data) => {
+    signalingHandler(data, socket);
   })
 })
 

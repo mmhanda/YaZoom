@@ -21,7 +21,7 @@ const RoomPage = (props) => {
       <VideoSection />
       <ChatSection />
       <RoomLabel roomId={roomId} />
-      {/* {showOverlay && <OverLay />} */}
+      {showOverlay && <OverLay />}
     </div>
   );
 };
