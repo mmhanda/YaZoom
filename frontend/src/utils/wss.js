@@ -21,10 +21,8 @@ export const createRoom = async (identity) => {
     store.dispatch(setRoomId(roomId));
   })
   socket.on('room-update', (data) => {
-    console.log("room-update");
-    const { connectedUser } = data;
-    console.log(connectedUser);
-    store.dispatch(setParticipants(connectedUser));
+    const { connectedUsers } = data;
+    store.dispatch(setParticipants(connectedUsers));
   });
 }
 
@@ -34,4 +32,8 @@ export const joinRoom = (identity, roomId) => {
     roomId,
   }
   socket.emit('join-room', data);
+  socket.on('room-update', (data) => {
+    const { connectedUsers } = data;
+    store.dispatch(setParticipants(connectedUsers));
+  });
 }

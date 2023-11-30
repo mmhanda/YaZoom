@@ -14,10 +14,10 @@ const Participants = ({ app }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    setInterval(() => {
-      setData([app]);
-    }, 100);
-  }, [app]);
+    if (Array.isArray(app.participants)) {
+      setData(app.participants);
+    }
+  }, [app.participants]);
 
   return (
     <div className="participants_container">

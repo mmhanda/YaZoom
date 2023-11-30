@@ -11,15 +11,15 @@ const server = http.createServer(app);
 
 app.use(cors()); // no specified port the cors middleware allow every one to connect it just for security reason
 
-const connectedUser = [];
-const rooms = [];
+let connectedUsers = [];
+let rooms = [];
 
 app.get('/api/room-exists/:roomId', (req, res) => {
   const { roomId } = req.params;
   const room = rooms.find(room => room.id === roomId);
 
   if (room) {
-    if (room.connectedUser.length > 3) {
+    if (room.connectedUsers.length > 3) {
       return res.json({ roomExists: true, full: true })
     } else {
       return res.json({ roomExists: true, full: false })
@@ -36,53 +36,54 @@ const io = require('socket.io')(server, {
   }
 });
 
-const handleCreateNewRoom = (data, clientId) => {
+const handleCreateNewRoom = (data, socketId) => {
   const { identity } = data;
   const roomId = uuidv4();
+
   const newUser = {
     identity,
     id: uuidv4(),
-    socketId: clientId,
+    socketId: socketId.id,
     roomId,
   }
-  connectedUser.push(newUser);
 
-  // let tab.push
+  connectedUsers = [...connectedUsers, newUser];
+
   const newRoom = {
     id: roomId,
-    connectedUser: [newUser],
+    connectedUsers: [newUser],
   }
 
-  io.to(clientId).emit('room-id', { roomId });
-  io.sockets.sockets.get(clientId).join(roomId);
-  rooms.push(newRoom);
-  io.to(roomId).emit('room-update', { connectedUser: newRoom.connectedUser });
+  socketId.join(roomId);
+  rooms = [...rooms, newRoom];
+  socketId.emit('room-id', { roomId });
 }
 
-const handelJoinRoom = (data, clientId) => {
+const handelJoinRoom = (data, socketId) => {
   const { identity, roomId } = data;
+
   const newUser = {
     identity,
     id: uuidv4(),
-    socketId: clientId,
+    socketId: socketId.id,
     roomId,
   }
 
-  const room = rooms.find(room => room.id === roomId);
-  if (room) {
-    room.connectedUser.push(newUser);
-    io.sockets.sockets.get(clientId).join(roomId);
-    console.log(room.connectedUser);
-    io.to(roomId).emit('room-update', { connectedUser: room.connectedUser });
-  }
+  const room = rooms.find(room => room.id == roomId);
+  room.connectedUsers = [...room.connectedUsers, newUser];
+  console.log(room);
+  socketId.join(room.id);
+  connectedUsers = [...connectedUsers, newUser];
+  io.to(room.id).emit('room-update', { connectedUsers: room.connectedUsers });
 }
 
 io.on("connection", (socket) => {
+  console.log(socket.id, "connected");
   socket.on('create-room', (data) => {
-    handleCreateNewRoom(data, socket.id);
+    handleCreateNewRoom(data, socket);
   })
   socket.on('join-room', (data) => {
-    handelJoinRoom(data, socket.id);
+    handelJoinRoom(data, socket);
   })
 })
 
