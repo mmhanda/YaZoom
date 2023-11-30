@@ -71,19 +71,34 @@ const handelJoinRoom = (data, socketId) => {
 
   const room = rooms.find(room => room.id == roomId);
   room.connectedUsers = [...room.connectedUsers, newUser];
-  console.log(room);
   socketId.join(room.id);
   connectedUsers = [...connectedUsers, newUser];
   io.to(room.id).emit('room-update', { connectedUsers: room.connectedUsers });
 }
 
+const handelDisconnect = (socket) => {
+  const user = connectedUsers.find((user) => user.socketId === socket.id);
+  if (user) {
+    const room = rooms.find((room) => room.id === user.roomId);
+
+    room.connectedUsers = room.connectedUsers.filter(user => user.socketId !== socket.id);
+    socket.leave(user.roomId);
+    if (room.connectedUsers.length > 0)
+      io.to(room.id).emit('room-update', { connectedUsers: room.connectedUsers });
+    else
+      rooms = rooms.filter((r) => r.id !== user.roomId);
+  }
+}
+
 io.on("connection", (socket) => {
-  console.log(socket.id, "connected");
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
   })
   socket.on('join-room', (data) => {
     handelJoinRoom(data, socket);
+  })
+  socket.on("disconnect", () => {
+    handelDisconnect(socket);
   })
 })
 

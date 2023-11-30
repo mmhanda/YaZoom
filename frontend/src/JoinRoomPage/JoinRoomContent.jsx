@@ -26,7 +26,6 @@ const JoinRoomContent = (props) => {
   const join_room = async () => {
     const response = await getRoomExists(roomIdValue);
     const { roomExists, full } = response;
-    setFull(full);
 
     setRoomId(roomIdValue);
     if (roomExists) {

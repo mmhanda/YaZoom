@@ -16,7 +16,12 @@ export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, ro
   //   localStream = stream;
   //   showLocalStream(localStream);
   //   store.dispatch(setOverLay(false));
+  try {
+
     isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
+  } catch (error) {
+
+  }
   // }).catch(error => {
   //   console.log(error);
   // })

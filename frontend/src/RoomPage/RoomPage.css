@@ -206,10 +206,10 @@ body {
 .participants_paragraph {
   color: black;
   text-align: start;
-  font-weight: 500;
+  font-weight: bolder;
   margin-left: 40px;
   transition: 0.5s;
-  margin: 0 40px;
+  margin: 10 40px;
   padding: 10px 0px;
 }
 
