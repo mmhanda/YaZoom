@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import JoinRoomInput from "./JoinRoomInput";
 import { useSelector } from "react-redux";
 import OnlyWithAudioCheckBox from "./OnlyWithAudioCheckBox";
@@ -17,8 +17,6 @@ const JoinRoomContent = (props) => {
   const [roomIdValue, setRoomIdValue] = useState("");
   const [nameValue, setNameValue] = useState("");
   const [Error, setError] = useState("");
-  const [roomExists, setRoomExists] = useState("");
-  const [full, setFull] = useState("");
   const { isRoomHost, connectOnlyWithAudio } = useSelector(
     (state) => state.app
   );
@@ -26,28 +24,21 @@ const JoinRoomContent = (props) => {
   const navigate = useNavigate();
 
   const join_room = async () => {
-    try {
-      const response = await getRoomExists(roomIdValue);
-      const { roomExists, full } = response;
-      setRoomExists(roomExists);
-      setFull(full);
-    } catch (error) {
-      console.log(error);
-    }
+    const response = await getRoomExists(roomIdValue);
+    const { roomExists, full } = response;
+    setFull(full);
 
-    useEffect(() => {
-      setRoomId(roomIdValue);
-      if (roomExists) {
-        if (full) {
-          setError("Meeting is Full!, try again later");
-        } else {
-          navigate('/room');
-        }
+    setRoomId(roomIdValue);
+    if (roomExists) {
+      if (full) {
+        setError("Meeting is Full!, try again later");
       } else {
-        setError("Meeting Not Found");
+        navigate('/room');
       }
+    } else {
+      setError("Meeting Not Found");
     }
-  }, [])
+  }
   const create_room = () => {
     if (nameValue)
       navigate('/room');
