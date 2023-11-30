@@ -6,12 +6,14 @@ import RoomLabel from "./RoomLabel";
 import { connect } from 'react-redux';
 import * as webRTCHandler from "../utils/WebRTCHandler";
 import { useEffect } from "react";
+import OverLay from "./OverLay";
 
-const RoomPage = ({ roomId, identity, isRoomHost }) => {
+const RoomPage = (props) => {
 
+  const { roomId, identity, isRoomHost, showOverlay } = props.app;
   useEffect(() => {
     webRTCHandler.getLocalPrevAndInitRoomConnection(isRoomHost, identity, roomId);
-  }, [])
+  }, [isRoomHost, identity, roomId])
 
   return (
     <div className="room_container">
@@ -19,6 +21,7 @@ const RoomPage = ({ roomId, identity, isRoomHost }) => {
       <VideoSection />
       <ChatSection />
       <RoomLabel roomId={roomId} />
+      {showOverlay && <OverLay />}
     </div>
   );
 };
@@ -27,6 +30,6 @@ const mapStoreStateToProps = (state) => {
   return {
     ...state,
   };
-}
+};
 
 export default connect(mapStoreStateToProps)(RoomPage);

@@ -1,3 +1,6 @@
+import store from "../store/store";
+import { setOverLay } from "../store/actions";
+
 const defaultConstrains = {
   audio: true,
   video: true,
@@ -13,6 +16,7 @@ export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, ro
   navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
     localStream = stream;
     showLocalStream(localStream);
+    store.dispatch(setOverLay(false));
   }).catch(error => {
     console.log(error);
   })

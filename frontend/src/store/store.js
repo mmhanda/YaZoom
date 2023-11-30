@@ -6,3 +6,5 @@ export const store = configureStore({
     app: reducer,
   },
 });
+
+export default store;

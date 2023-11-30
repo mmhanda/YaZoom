@@ -3,6 +3,7 @@ const Actions = {
   SET_CONNECT_ONLY_WITH_AUDIO: "SET_CONNECT_ONLY_WITH_AUDIO",
   SET_ROOM_ID: "SET_ROOM_ID",
   SET_IDENTITY: "SET_IDENTITY",
+  SET_SHOW_OVERLAY: "SET_SHOW_OVERLAY",
 };
 
 export const setIsRoomHost = (isRoomHost) => {
@@ -20,7 +21,6 @@ export const setConnectOnlyWithAudio = (OnlyWithAudio) => {
 };
 
 export const setIdentity = (identity) => {
-  console.log("setIdentity");
   return {
     type: Actions.SET_IDENTITY,
     identity,
@@ -28,10 +28,17 @@ export const setIdentity = (identity) => {
 };
 
 export const setRoomId = (roomId) => {
-  console.log("setIdentity");
   return {
     type: Actions.SET_ROOM_ID,
     roomId,
+  };
+};
+
+export const setOverLay = (overlayState) => {
+  console.log("SET_SHOW_OVERLAY");
+  return {
+    type: Actions.SET_SHOW_OVERLAY,
+    overlayState,
   };
 };
 
