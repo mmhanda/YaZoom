@@ -35,7 +35,6 @@ export const setRoomId = (roomId) => {
 };
 
 export const setOverLay = (overlayState) => {
-  console.log("SET_SHOW_OVERLAY");
   return {
     type: Actions.SET_SHOW_OVERLAY,
     overlayState,

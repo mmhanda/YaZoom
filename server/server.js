@@ -36,6 +36,12 @@ const io = require('socket.io')(server, {
   }
 });
 
+io.on("connection", (socket) => {
+  socket.on('create-room', (data) => {
+    console.error("data ", data);
+  })
+})
+
 server.listen(PORT, () => {
   console.log(`Server Started on PORT ${PORT}`);
 });

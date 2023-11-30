@@ -13,7 +13,7 @@ const RoomPage = (props) => {
   const { roomId, identity, isRoomHost, showOverlay } = props.app;
   useEffect(() => {
     webRTCHandler.getLocalPrevAndInitRoomConnection(isRoomHost, identity, roomId);
-  }, [isRoomHost, identity, roomId])
+  }, [])
 
   return (
     <div className="room_container">
