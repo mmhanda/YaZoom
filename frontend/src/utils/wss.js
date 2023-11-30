@@ -1,26 +1,29 @@
 import io from "socket.io-client"
-import { setRoomId } from "../store/actions";
+import { setRoomId, setParticipants } from "../store/actions";
 import store from "../store/store";
 
 const SERVER = "http://localhost:5002";
 
 let socket = null;
 
-export const connectWithSocketIoServer = () => {
+export const connectWithSocketIoServer = async () => {
   socket = io(SERVER);
   socket.on("connect", () => { });
 }
 
-export const createRoom = (identity) => {
+export const createRoom = async (identity) => {
   const data = {
     identity,
   }
   socket.emit('create-room', data);
-  socket.on('room-id', (data) => {
+  socket.once('room-id', (data) => {
     const { roomId } = data;
-    console.log("roomId ", roomId);
     store.dispatch(setRoomId(roomId));
   })
+  socket.on('room-update', (data) => {
+    const { connectedUser } = data;
+    store.dispatch(setParticipants(connectedUser));
+  });
 }
 
 export const joinRoom = (identity, roomId) => {

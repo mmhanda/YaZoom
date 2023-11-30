@@ -47,6 +47,7 @@ const handleCreateNewRoom = (data, clientId) => {
   }
   connectedUser.push(newUser);
 
+  // let tab.push
   const newRoom = {
     id: roomId,
     connectedUser: [newUser],
@@ -55,6 +56,7 @@ const handleCreateNewRoom = (data, clientId) => {
   io.to(clientId).emit('room-id', { roomId });
   io.sockets.sockets.get(clientId).join(roomId);
   rooms.push(newRoom);
+  io.to(clientId).emit('room-update', { connectedUser: newRoom.connectedUser });
 }
 
 io.on("connection", (socket) => {

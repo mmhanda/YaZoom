@@ -1,23 +1,5 @@
-const DummyParticipants = [
-  {
-    identity: "jimmy",
-  },
-  {
-    identity: "jimmy1",
-  },
-  {
-    identity: "jimmy2",
-  },
-  {
-    identity: "jimmy3",
-  },
-  {
-    identity: "jimmy4",
-  },
-  {
-    identity: "jimmy5",
-  },
-];
+import { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 
 const SinglePart = (props) => {
   const { identity, LastItem, participants } = props;
@@ -28,19 +10,31 @@ const SinglePart = (props) => {
   </>
 }
 
-const Participants = () => {
+const Participants = ({ app }) => {
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    setData([app]);
+  }, [app]);
+
   return (
     <div className="participants_container">
-      {DummyParticipants.map((participant, index) => {
-        return (
-          <SinglePart key={participant.identity}
-            LastItem={DummyParticipants.length === index + 1}
-            participant={participant}
-            identity={participant.identity} />
-        )
-      })}
+      {data.map((participant, index) => (
+        <SinglePart
+          key={participant.identity}
+          LastItem={data.length === index + 1}
+          participant={participant}
+          identity={participant.identity}
+        />
+      ))}
     </div>
   );
 };
 
-export default Participants;
+const mapStoreStateToProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+export default connect(mapStoreStateToProps)(Participants);

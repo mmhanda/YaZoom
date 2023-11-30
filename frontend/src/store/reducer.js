@@ -6,6 +6,7 @@ const initialState = {
   connectOnlyWithAudio: false,
   roomId: '',
   showOverlay: true,
+  participants: '',
 };
 
 const reducer = (state = initialState, action) => {
@@ -34,6 +35,11 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         showOverlay: action.overlayState,
+      }
+    case Actions.SET_PARTICIPANTS:
+      return {
+        ...state,
+        participants: action.connectedUser,
       }
     default:
       return state;

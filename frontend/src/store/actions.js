@@ -4,6 +4,7 @@ const Actions = {
   SET_ROOM_ID: "SET_ROOM_ID",
   SET_IDENTITY: "SET_IDENTITY",
   SET_SHOW_OVERLAY: "SET_SHOW_OVERLAY",
+  SET_PARTICIPANTS: "SET_PARTICIPANTS",
 };
 
 export const setIsRoomHost = (isRoomHost) => {
@@ -38,6 +39,13 @@ export const setOverLay = (overlayState) => {
   return {
     type: Actions.SET_SHOW_OVERLAY,
     overlayState,
+  };
+};
+
+export const setParticipants = (connectedUser) => {
+  return {
+    type: Actions.SET_PARTICIPANTS,
+    connectedUser,
   };
 };
 
