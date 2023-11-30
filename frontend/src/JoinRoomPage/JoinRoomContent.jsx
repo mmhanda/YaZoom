@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import JoinRoomInput from "./JoinRoomInput";
 import { useSelector } from "react-redux";
 import OnlyWithAudioCheckBox from "./OnlyWithAudioCheckBox";
@@ -35,17 +35,19 @@ const JoinRoomContent = (props) => {
       console.log(error);
     }
 
-    setRoomId(roomIdValue);
-    if (roomExists) {
-      if (full) {
-        setError("Meeting is Full!, try again later");
+    useEffect(() => {
+      setRoomId(roomIdValue);
+      if (roomExists) {
+        if (full) {
+          setError("Meeting is Full!, try again later");
+        } else {
+          navigate('/room');
+        }
       } else {
-        navigate('/room');
+        setError("Meeting Not Found");
       }
-    } else {
-      setError("Meeting Not Found");
     }
-  }
+  }, [])
   const create_room = () => {
     if (nameValue)
       navigate('/room');
