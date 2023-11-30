@@ -1,5 +1,3 @@
-import React from 'react';
-  
 const JoinRoomTitle = ({ isRoomHost }) => {
   const titleText = isRoomHost ? "Host meeting" : "Join meeting";
 

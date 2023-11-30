@@ -4,9 +4,14 @@ import ChatSection from "./ChatSection/ChatSection";
 import VideoSection from "./VideoSection/VideoSection";
 import RoomLabel from "./RoomLabel";
 import { connect } from 'react-redux';
+import * as webRTCHandler from "../utils/WebRTCHandler";
+import { useEffect } from "react";
 
-const RoomPage = ({ roomId }) => {
-  console.log("pushToJoinRoomPageAsHost");
+const RoomPage = ({ roomId, identity, isRoomHost }) => {
+
+  useEffect(() => {
+    webRTCHandler.getLocalPrevAndInitRoomConnection(isRoomHost, identity, roomId);
+  }, [])
 
   return (
     <div className="room_container">

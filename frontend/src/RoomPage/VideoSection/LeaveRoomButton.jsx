@@ -1,9 +1,7 @@
-import React from 'react';
-
 const LeaveRoomButton = () => {
   const handelRoomDisconnection = () => {
-    const siteUrl = window.location.origin;
-    window.location.href = siteUrl;
+    const home_url = window.location.origin;
+    window.location.href = home_url;
   }
   return (
     <div className='video_button_container'>

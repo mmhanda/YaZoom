@@ -1,5 +1,3 @@
-import React from 'react';
-
 const RoomLabel = ({ roomId }) => {
   console.log(roomId);
   return (
