@@ -1,4 +1,6 @@
 import io from "socket.io-client"
+import { setRoomId } from "../store/actions";
+import store from "../store/store";
 
 const SERVER = "http://localhost:5002";
 
@@ -14,6 +16,11 @@ export const createRoom = (identity) => {
     identity,
   }
   socket.emit('create-room', data);
+  socket.on('room-id', (data) => {
+    const { roomId } = data;
+    console.log("roomId ", roomId);
+    store.dispatch(setRoomId(roomId));
+  })
 }
 
 export const joinRoom = (identity, roomId) => {

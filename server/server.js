@@ -36,9 +36,30 @@ const io = require('socket.io')(server, {
   }
 });
 
+const handleCreateNewRoom = (data, clientId) => {
+  const { identity } = data;
+  const roomId = uuidv4();
+  const newUser = {
+    identity,
+    id: uuidv4(),
+    socketId: clientId,
+    roomId,
+  }
+  connectedUser.push(newUser);
+
+  const newRoom = {
+    id: roomId,
+    connectedUser: [newUser],
+  }
+
+  io.to(clientId).emit('room-id', { roomId });
+  io.sockets.sockets.get(clientId).join(roomId);
+  rooms.push(newRoom);
+}
+
 io.on("connection", (socket) => {
   socket.on('create-room', (data) => {
-    console.error("data ", data);
+    handleCreateNewRoom(data, socket.id);
   })
 })
 
