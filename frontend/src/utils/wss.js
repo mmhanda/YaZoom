@@ -22,10 +22,14 @@ export const connectWithSocketIoServer = async () => {
   });
   socket.on('conn-prepare', (data) => {
     const { ConnUserSocketId } = data;
-    WebRTCHandler.prepareNewConnection(ConnUserSocketId, false)
+    WebRTCHandler.prepareNewConnection(ConnUserSocketId, false);
+    socket.emit('conn-init', { ConnUserSocketId: ConnUserSocketId });
   });
   socket.on("conn-signal", (data) => {
     WebRTCHandler.handelSignalingData(data);
+  })
+  socket.on('conn-init', (data) => {
+    WebRTCHandler.prepareNewConnection(data.ConnUserSocketId, true);
   })
 }
 

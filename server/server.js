@@ -106,6 +106,13 @@ const signalingHandler = (data, socket) => {
   io.to(ConnUserSocketId).emit("conn-signal", signalingData);
 }
 
+const initHandler = (data, socket) => {
+  const { ConnUserSocketId } = data;
+
+  const signalingData = { ConnUserSocketId: socket.id }
+  io.to(ConnUserSocketId).emit("conn-init", signalingData);
+};
+
 io.on("connection", (socket) => {
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
@@ -118,6 +125,9 @@ io.on("connection", (socket) => {
   })
   socket.on('conn-signal', (data) => {
     signalingHandler(data, socket);
+  })
+  socket.on('conn-init', (data) => {
+    initHandler(data, socket);
   })
 })
 
