@@ -10,8 +10,6 @@ const defaultConstrains = {
 
 let localStream;
 
-const showLocalStream = () => { }
-
 let peers = {};
 let streams = {};
 
@@ -27,6 +25,23 @@ const getConfigurations = () => {
 
 const addStream = (stream, ConnUserSocketId) => {
 
+}
+
+const showLocalStream = (stream) => {
+  const videosContainer = document.getElementById('videos_portal');
+  videosContainer.classList.add('videos_portal_styles');
+  const videoContainer = document.getElementById('div');
+  videoContainer.classList.add("video_track_container");
+  const videoElement = document.createElement('video');
+  videoElement.autoplay = true;
+  videoElement.muted = true;
+  videoElement.srcObject = stream;
+
+  videoElement.onloadedmetadata = () => { // manually playing the video just for the old browsers that do not have auto play
+    videoElement.play();
+  }
+  videoContainer.appendChild(videoElement);
+  videosContainer.appendChild(videoContainer);
 }
 
 export const prepareNewConnection = (ConnUserSocketId, isInitiator) => {
