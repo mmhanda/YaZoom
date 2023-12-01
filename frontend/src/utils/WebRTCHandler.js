@@ -5,7 +5,11 @@ import Peer from "simple-peer"
 
 const defaultConstrains = {
   audio: true,
-  video: true,
+  // video: true,
+  video: {
+    width: "480",
+    height: "360",
+  }
 }
 
 let localStream;
@@ -24,7 +28,45 @@ const getConfigurations = () => {
 }
 
 const addStream = (stream, ConnUserSocketId) => {
+  // const videosContainer = document.getElementById('videos_portal');
+  // const videoContainer = document.getElementById('div');
+  // videoContainer.id = ConnUserSocketId;
+  // videoContainer.classList.add("video_track_container");
+  // const videoElement = document.createElement('video');
+  // videoElement.id = `${ConnUserSocketId}-video`;
+  // videoElement.autoplay = true;
+  // videoElement.srcObject = stream;
 
+  // videoElement.onloadedmetadata = () => { // manually playing the video just for the old browsers that do not have auto play
+  //   videoElement.play();
+  // }
+  // videoContainer.appendChild(videoElement);
+  // videosContainer.appendChild(videoContainer);
+
+  const videosContainer = document.getElementById('videos_portal');
+  videosContainer.classList.add('videos_portal_styles');
+  const videoContainer = document.getElementById('div');
+  videoContainer.id = ConnUserSocketId;
+  videoContainer.classList.add("video_track_container");
+  const videoElement = document.createElement('video');
+  videoElement.id = `${ConnUserSocketId}-video`;
+  videoElement.autoplay = true;
+  videoElement.srcObject = stream;
+
+  videoElement.onloadedmetadata = () => { // manually playing the video just for the old browsers that do not have auto play
+    videoElement.play();
+  }
+
+  videoElement.addEventListener("click", () => {
+    if (videoElement.classList.contains('full_screen')) {
+      videoElement.classList.remove("full_screen");
+    } else {
+      videoElement.classList.add('full_screen');
+    }
+  })
+
+  videoContainer.appendChild(videoElement);
+  videosContainer.appendChild(videoContainer);
 }
 
 const showLocalStream = (stream) => {
