@@ -90,8 +90,10 @@ const handelDisconnect = (socket) => {
 
     room.connectedUsers = room.connectedUsers.filter(user => user.socketId !== socket.id);
     socket.leave(user.roomId);
-    if (room.connectedUsers.length > 0)
+    if (room.connectedUsers.length > 0) {
+      io.to(room.id).emit('user-disconnected', { socketId: socket.id });
       io.to(room.id).emit('room-update', { connectedUsers: room.connectedUsers });
+    }
     else
       rooms = rooms.filter((r) => r.id !== user.roomId);
   }

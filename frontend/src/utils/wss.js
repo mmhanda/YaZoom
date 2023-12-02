@@ -30,6 +30,9 @@ export const connectWithSocketIoServer = async () => {
   socket.on('conn-init', data => {
     const { connUserSocketId } = data;
     WebRTCHandler.prepareNewPeerConnection(connUserSocketId, true);
+  });
+  socket.on('user-disconnected', (data) => {
+    WebRTCHandler.removePeerConnection(data)
   })
 }
 

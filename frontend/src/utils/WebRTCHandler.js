@@ -33,19 +33,21 @@ const showLocalVideoPreview = (stream) => {
 }
 
 const addStream = (stream, connUserSocketId) => {
-  const videosContainer = document.getElementById('videos_portal');
-  const videoContainer = document.createElement('div');
-  videoContainer.id = connUserSocketId;
-  videoContainer.classList.add('video_track_container');
-  const videoElement = document.createElement('video');
-  videoElement.autoplay = true;
-  videoElement.srcObject = stream;
-  videoElement.id = `${connUserSocketId}-video`;
-
+  try {
+    
+    const videosContainer = document.getElementById('videos_portal');
+    const videoContainer = document.createElement('div');
+    videoContainer.id = connUserSocketId;
+    videoContainer.classList.add('video_track_container');
+    const videoElement = document.createElement('video');
+    videoElement.autoplay = true;
+    videoElement.srcObject = stream;
+    videoElement.id = `${connUserSocketId}-video`;
+    
   videoElement.onloadedmetadata = () => {
     videoElement.play();
   };
-
+  
   videoElement.addEventListener('click', () => {
     if (videoElement.classList.contains('full_screen')) {
       videoElement.classList.remove('full_screen')
@@ -56,21 +58,29 @@ const addStream = (stream, connUserSocketId) => {
   
   videoContainer.appendChild(videoElement);
   videosContainer.appendChild(videoContainer);
+} catch (error) {
+  
+}
 }
 
 export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null) => {
-  await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
-    localStream = stream;
-    showLocalVideoPreview(localStream);
-    store.dispatch(setOverLay(false));
-    try {
-      isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
-    } catch (error) {
-
-    }
-  }).catch(error => {
-    console.log(error);
-  })
+  try {
+    await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
+      localStream = stream;
+      showLocalVideoPreview(localStream);
+      store.dispatch(setOverLay(false));
+      try {
+        isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
+      } catch (error) {
+        
+      }
+    }).catch(error => {
+      console.log(error);
+    })
+    
+  } catch (error) {
+    
+  }
 }
 
 let peers = {};
@@ -87,6 +97,7 @@ const getConfigurations = () => {
 };
 
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
+  try {
   const configuration = getConfigurations();
 
   peers[connUserSocketId] = new Peer({
@@ -104,13 +115,40 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     wss.signalPeerData(signalData);
   });
 
+  
   peers[connUserSocketId].on('stream', (stream) => {
     addStream(stream, connUserSocketId);
     streams = [...streams, stream];
   });
+} catch (error) {
+  console.log(error);
+}
 };
 
 export const handelSignalingData = (data) => {
   // inside signal it checks for offer and answer
   peers[data.connUserSocketId].signal(data.signal);
 };
+
+export const removePeerConnection = (data) => {
+  try {
+    
+    const { socketId } = data;
+    const videoContainer = document.getElementById(socketId);
+    const videoElement = document.getElementById(`${socketId}-video`);
+    
+    if (videoContainer && videoElement) {
+      const tracks = videoElement.srcObject.getTracks(); // get all the videos playing in that id and stop them;
+      tracks.forEach(track => track.stop());
+      videoElement.srcObject = null;
+      videoContainer.removeChild(videoElement);
+      videoContainer.parentNode.removeChild(videoContainer); // remove the video container it self from the videosContainer;
+      if (peers[socketId]) { // remove from the connection from the Peers 
+        peers[socketId].destroy();
+      }
+      delete peers[socketId];
+    }
+  } catch (error) {
+    
+  }
+}
