@@ -99,7 +99,6 @@ const handelDisconnect = (socket) => {
 
 const signalingHandler = (data, socket) => {
   const { connUserSocketId, signal } = data;
-  console.log(connUserSocketId, "  ", signal);
   const signalData = { signal, connUserSocketId: socket.id }
   io.to(connUserSocketId).emit('conn-signal', signalData);
 }

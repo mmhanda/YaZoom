@@ -49,6 +49,5 @@ export const joinRoom = (identity, roomId) => {
 }
 
 export const signalPeerData = (data) => {
-  console.log("data ", data);
   socket.emit('conn-signal', data);
 }

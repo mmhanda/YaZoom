@@ -5,7 +5,11 @@ import Peer from "simple-peer";
 
 const defaultConstrains = {
   audio: true,
-  video: true,
+  video: true, // for full quality
+  // video: {
+  //   width: "480",
+  //   height: "300",
+  // },
 }
 
 let localStream;
@@ -19,6 +23,7 @@ const showLocalVideoPreview = (stream) => {
   videoElement.autoplay = true;
   videoElement.muted = true;
   videoElement.srcObject = stream;
+
   videoElement.onloadedmetadata = () => {
     videoElement.play();
   };
@@ -40,6 +45,14 @@ const addStream = (stream, connUserSocketId) => {
   videoElement.onloadedmetadata = () => {
     videoElement.play();
   };
+
+  videoElement.addEventListener('click', () => {
+    if (videoElement.classList.contains('full_screen')) {
+      videoElement.classList.remove('full_screen')
+    } else {
+      videoElement.classList.add('full_screen');
+    }
+  })
   
   videoContainer.appendChild(videoElement);
   videosContainer.appendChild(videoContainer);
@@ -74,7 +87,6 @@ const getConfigurations = () => {
 };
 
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
-  console.log("prepareNewPeerConnection");
   const configuration = getConfigurations();
 
   peers[connUserSocketId] = new Peer({
@@ -93,14 +105,12 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   });
 
   peers[connUserSocketId].on('stream', (stream) => {
-    console.log("new Stream");
-
     addStream(stream, connUserSocketId);
     streams = [...streams, stream];
   });
 };
 
 export const handelSignalingData = (data) => {
+  // inside signal it checks for offer and answer
   peers[data.connUserSocketId].signal(data.signal);
-  // console.log(peers[data.connUserSocketId]);
 };
