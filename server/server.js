@@ -36,14 +36,14 @@ const io = require('socket.io')(server, {
   }
 });
 
-const handleCreateNewRoom = (data, socketId) => {
+const handleCreateNewRoom = (data, socket) => {
   const { identity } = data;
   const roomId = uuidv4();
 
   const newUser = {
     identity,
     id: uuidv4(),
-    socketId: socketId.id,
+    socketId: socket.id,
     roomId,
   }
 
@@ -54,31 +54,29 @@ const handleCreateNewRoom = (data, socketId) => {
     connectedUsers: [newUser],
   }
 
-  socketId.join(roomId);
+  socket.join(roomId);
   rooms = [...rooms, newRoom];
-  socketId.emit('room-id', { roomId });
+  socket.emit('room-id', { roomId });
 }
 
-const handelJoinRoom = (data, socketId) => {
+const handelJoinRoom = (data, socket) => {
   const { identity, roomId } = data;
 
   const newUser = {
     identity,
     id: uuidv4(),
-    socketId: socketId.id,
+    socketId: socket.id,
     roomId,
   }
 
   const room = rooms.find(room => room.id == roomId);
   room.connectedUsers = [...room.connectedUsers, newUser];
-  socketId.join(room.id);
+  socket.join(room.id);
   connectedUsers = [...connectedUsers, newUser];
-  room.connectedUsers.forEach((user) => {
-    if (user.socketId !== socketId.id) {
-      const data = {
-        ConnUserSocketId: socketId.id,
-      };
-      io.to(user.socketId).emit('conn-prepare', { data });
+  room.connectedUsers.forEach(user => {
+    if (user.socketId !== socket.id) {
+      const data = { connUserSocketId: socket.id }
+      io.to(user.socketId).emit("conn-prepare", data);
     }
   });
 
@@ -100,35 +98,34 @@ const handelDisconnect = (socket) => {
 }
 
 const signalingHandler = (data, socket) => {
-  const { ConnUserSocketId, signal } = data;
-
-  const signalingData = { signal, ConnUserSocketId: socket.id }
-  io.to(ConnUserSocketId).emit("conn-signal", signalingData);
+  const { connUserSocketId, signal } = data;
+  console.log(connUserSocketId, "  ", signal);
+  const signalData = { signal, connUserSocketId: socket.id }
+  io.to(connUserSocketId).emit('conn-signal', signalData);
 }
 
-const initHandler = (data, socket) => {
-  const { ConnUserSocketId } = data;
-
-  const signalingData = { ConnUserSocketId: socket.id }
-  io.to(ConnUserSocketId).emit("conn-init", signalingData);
-};
+const initializeConnectionHandler = (data, socket) => {
+  const { connUserSocketId } = data;
+  const initData = {connUserSocketId: socket.id};
+  io.to(connUserSocketId).emit('conn-init', initData);
+}
 
 io.on("connection", (socket) => {
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
-  })
+  });
   socket.on('join-room', (data) => {
     handelJoinRoom(data, socket);
-  })
+  });
   socket.on("disconnect", () => {
     handelDisconnect(socket);
-  })
+  });
   socket.on('conn-signal', (data) => {
     signalingHandler(data, socket);
-  })
-  socket.on('conn-init', (data) => {
-    initHandler(data, socket);
-  })
+  });
+  socket.on("conn-init", data => {
+    initializeConnectionHandler(data, socket);
+  });
 })
 
 server.listen(PORT, () => {

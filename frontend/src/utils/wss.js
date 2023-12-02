@@ -9,9 +9,7 @@ let socket = null;
 
 export const connectWithSocketIoServer = async () => {
   socket = io(SERVER);
-
   socket.on("connect", () => { });
-
   socket.on('room-id', (data) => {
     const { roomId } = data;
     store.dispatch(setRoomId(roomId));
@@ -20,16 +18,18 @@ export const connectWithSocketIoServer = async () => {
     const { connectedUsers } = data;
     store.dispatch(setParticipants(connectedUsers));
   });
-  socket.on('conn-prepare', (data) => {
-    const { ConnUserSocketId } = data;
-    WebRTCHandler.prepareNewConnection(ConnUserSocketId, false);
-    socket.emit('conn-init', { ConnUserSocketId: ConnUserSocketId });
+  socket.on("conn-prepare", (data) => {
+    const {connUserSocketId} = data;
+    WebRTCHandler.prepareNewPeerConnection(connUserSocketId, false);
+    // inform the user which just joined that we are prepared for incoming connection
+    socket.emit('conn-init', {connUserSocketId: connUserSocketId});
   });
-  socket.on("conn-signal", (data) => {
+  socket.on('conn-signal', (data) => {
     WebRTCHandler.handelSignalingData(data);
-  })
-  socket.on('conn-init', (data) => {
-    WebRTCHandler.prepareNewConnection(data.ConnUserSocketId, true);
+  });
+  socket.on('conn-init', data => {
+    const { connUserSocketId } = data;
+    WebRTCHandler.prepareNewPeerConnection(connUserSocketId, true);
   })
 }
 
@@ -49,5 +49,6 @@ export const joinRoom = (identity, roomId) => {
 }
 
 export const signalPeerData = (data) => {
+  console.log("data ", data);
   socket.emit('conn-signal', data);
 }
