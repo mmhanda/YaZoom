@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./JoinRoomPage.css";
 import { useLocation } from "react-router-dom";
 import { connect } from "react-redux";

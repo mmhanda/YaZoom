@@ -27,14 +27,14 @@ const showLocalVideoPreview = (stream) => {
   videoElement.onloadedmetadata = () => {
     videoElement.play();
   };
-  
+
   videoContainer.appendChild(videoElement);
   videosContainer.appendChild(videoContainer);
 }
 
 const addStream = (stream, connUserSocketId) => {
   try {
-    
+
     const videosContainer = document.getElementById('videos_portal');
     const videoContainer = document.createElement('div');
     videoContainer.id = connUserSocketId;
@@ -43,24 +43,24 @@ const addStream = (stream, connUserSocketId) => {
     videoElement.autoplay = true;
     videoElement.srcObject = stream;
     videoElement.id = `${connUserSocketId}-video`;
-    
-  videoElement.onloadedmetadata = () => {
-    videoElement.play();
-  };
-  
-  videoElement.addEventListener('click', () => {
-    if (videoElement.classList.contains('full_screen')) {
-      videoElement.classList.remove('full_screen')
-    } else {
-      videoElement.classList.add('full_screen');
-    }
-  })
-  
-  videoContainer.appendChild(videoElement);
-  videosContainer.appendChild(videoContainer);
-} catch (error) {
-  
-}
+
+    videoElement.onloadedmetadata = () => {
+      videoElement.play();
+    };
+
+    videoElement.addEventListener('click', () => {
+      if (videoElement.classList.contains('full_screen')) {
+        videoElement.classList.remove('full_screen')
+      } else {
+        videoElement.classList.add('full_screen');
+      }
+    })
+
+    videoContainer.appendChild(videoElement);
+    videosContainer.appendChild(videoContainer);
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null) => {
@@ -72,14 +72,14 @@ export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, ro
       try {
         isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
       } catch (error) {
-        
+
       }
     }).catch(error => {
       console.log(error);
     })
-    
+
   } catch (error) {
-    
+    console.log(error);
   }
 }
 
@@ -98,31 +98,31 @@ const getConfigurations = () => {
 
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   try {
-  const configuration = getConfigurations();
+    const configuration = getConfigurations();
 
-  peers[connUserSocketId] = new Peer({
-    initiator: isInitiator,
-    config: configuration,
-    stream: localStream,
-  })
+    peers[connUserSocketId] = new Peer({
+      initiator: isInitiator,
+      config: configuration,
+      stream: localStream,
+    })
 
-  peers[connUserSocketId].on('signal', (data) => {
-    const signalData = {
-      signal: data,
-      connUserSocketId: connUserSocketId,
-    };
+    peers[connUserSocketId].on('signal', (data) => {
+      const signalData = {
+        signal: data,
+        connUserSocketId: connUserSocketId,
+      };
 
-    wss.signalPeerData(signalData);
-  });
+      wss.signalPeerData(signalData);
+    });
 
-  
-  peers[connUserSocketId].on('stream', (stream) => {
-    addStream(stream, connUserSocketId);
-    streams = [...streams, stream];
-  });
-} catch (error) {
-  console.log(error);
-}
+
+    peers[connUserSocketId].on('stream', (stream) => {
+      addStream(stream, connUserSocketId);
+      streams = [...streams, stream];
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const handelSignalingData = (data) => {
@@ -132,11 +132,11 @@ export const handelSignalingData = (data) => {
 
 export const removePeerConnection = (data) => {
   try {
-    
+
     const { socketId } = data;
     const videoContainer = document.getElementById(socketId);
     const videoElement = document.getElementById(`${socketId}-video`);
-    
+
     if (videoContainer && videoElement) {
       const tracks = videoElement.srcObject.getTracks(); // get all the videos playing in that id and stop them;
       tracks.forEach(track => track.stop());
@@ -149,6 +149,6 @@ export const removePeerConnection = (data) => {
       delete peers[socketId];
     }
   } catch (error) {
-    
+    console.log(error);
   }
 }

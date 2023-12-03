@@ -5,7 +5,11 @@ import { connectWithSocketIoServer } from "./utils/wss";
 
 const App = () => {
   useEffect(() => {
-    connectWithSocketIoServer();
+    try {
+      connectWithSocketIoServer();
+    } catch (error) {
+      console.log(error);
+    }
   }, [])
   return (
     <>
