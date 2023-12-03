@@ -141,3 +141,12 @@ export const removePeerConnection = (data) => {
     delete peers[socketId];
   }
 }
+
+export const toggleMic = (MuteUnmute) => {
+  localStream.getAudioTracks()[0].enabled = MuteUnmute;
+}
+
+export const toggleCamera = (EnableDisable) => {
+  localStream.getVideoTracks()[0].enabled = EnableDisable;
+  console.log(localStream.getVideoTracks()[0].enabled);
+}
