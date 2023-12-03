@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 const SinglePart = (props) => {
-  const { identity, LastItem, participants } = props;
+  const { identity, LastItem } = props;
 
   return <>
     <p className="participants_paragraph"> {identity} </p>
