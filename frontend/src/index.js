@@ -12,6 +12,13 @@ import IntroductionPage from './IntroductionPage/IntroductionPage';
 import ReactDOM from 'react-dom/client';
 import "./index.css";
 
+(window).process = {
+  env: { DEBUG: undefined },
+  nextTick: function () {
+    return null;
+  }
+};
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element={<App />}>
@@ -20,9 +27,7 @@ const router = createBrowserRouter(
       <Route path='/room' element={<RoomPage />} />
     </Route>
   ))
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
 root.render(
   // <React.StrictMode>
   <Provider store={store}>

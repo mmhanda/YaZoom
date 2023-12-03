@@ -33,54 +33,44 @@ const showLocalVideoPreview = (stream) => {
 }
 
 const addStream = (stream, connUserSocketId) => {
-  try {
+  const videosContainer = document.getElementById('videos_portal');
+  const videoContainer = document.createElement('div');
+  videoContainer.id = connUserSocketId;
+  videoContainer.classList.add('video_track_container');
+  const videoElement = document.createElement('video');
+  videoElement.autoplay = true;
+  videoElement.srcObject = stream;
+  videoElement.id = `${connUserSocketId}-video`;
 
-    const videosContainer = document.getElementById('videos_portal');
-    const videoContainer = document.createElement('div');
-    videoContainer.id = connUserSocketId;
-    videoContainer.classList.add('video_track_container');
-    const videoElement = document.createElement('video');
-    videoElement.autoplay = true;
-    videoElement.srcObject = stream;
-    videoElement.id = `${connUserSocketId}-video`;
+  videoElement.onloadedmetadata = () => {
+    videoElement.play();
+  };
 
-    videoElement.onloadedmetadata = () => {
-      videoElement.play();
-    };
+  videoElement.addEventListener('click', () => {
+    if (videoElement.classList.contains('full_screen')) {
+      videoElement.classList.remove('full_screen')
+    } else {
+      videoElement.classList.add('full_screen');
+    }
+  })
 
-    videoElement.addEventListener('click', () => {
-      if (videoElement.classList.contains('full_screen')) {
-        videoElement.classList.remove('full_screen')
-      } else {
-        videoElement.classList.add('full_screen');
-      }
-    })
-
-    videoContainer.appendChild(videoElement);
-    videosContainer.appendChild(videoContainer);
-  } catch (error) {
-    console.log(error);
-  }
+  videoContainer.appendChild(videoElement);
+  videosContainer.appendChild(videoContainer);
 }
 
 export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null) => {
-  try {
-    await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
-      localStream = stream;
-      showLocalVideoPreview(localStream);
-      store.dispatch(setOverLay(false));
-      try {
-        isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
-      } catch (error) {
+  await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
+    localStream = stream;
+    showLocalVideoPreview(localStream);
+    store.dispatch(setOverLay(false));
+    try {
+      isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
+    } catch (error) {
 
-      }
-    }).catch(error => {
-      console.log(error);
-    })
-
-  } catch (error) {
+    }
+  }).catch(error => {
     console.log(error);
-  }
+  })
 }
 
 let peers = {};
@@ -97,32 +87,28 @@ const getConfigurations = () => {
 };
 
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
-  try {
-    const configuration = getConfigurations();
+  const configuration = getConfigurations();
 
-    peers[connUserSocketId] = new Peer({
-      initiator: isInitiator,
-      config: configuration,
-      stream: localStream,
-    })
+  peers[connUserSocketId] = new Peer({
+    initiator: isInitiator,
+    config: configuration,
+    stream: localStream,
+  })
 
-    peers[connUserSocketId].on('signal', (data) => {
-      const signalData = {
-        signal: data,
-        connUserSocketId: connUserSocketId,
-      };
+  peers[connUserSocketId].on('signal', (data) => {
+    const signalData = {
+      signal: data,
+      connUserSocketId: connUserSocketId,
+    };
 
-      wss.signalPeerData(signalData);
-    });
+    wss.signalPeerData(signalData);
+  });
 
 
-    peers[connUserSocketId].on('stream', (stream) => {
-      addStream(stream, connUserSocketId);
-      streams = [...streams, stream];
-    });
-  } catch (error) {
-    console.log(error);
-  }
+  peers[connUserSocketId].on('stream', (stream) => {
+    addStream(stream, connUserSocketId);
+    streams = [...streams, stream];
+  });
 };
 
 export const handelSignalingData = (data) => {
@@ -131,24 +117,20 @@ export const handelSignalingData = (data) => {
 };
 
 export const removePeerConnection = (data) => {
-  try {
 
-    const { socketId } = data;
-    const videoContainer = document.getElementById(socketId);
-    const videoElement = document.getElementById(`${socketId}-video`);
+  const { socketId } = data;
+  const videoContainer = document.getElementById(socketId);
+  const videoElement = document.getElementById(`${socketId}-video`);
 
-    if (videoContainer && videoElement) {
-      const tracks = videoElement.srcObject.getTracks(); // get all the videos playing in that id and stop them;
-      tracks.forEach(track => track.stop());
-      videoElement.srcObject = null;
-      videoContainer.removeChild(videoElement);
-      videoContainer.parentNode.removeChild(videoContainer); // remove the video container it self from the videosContainer;
-      if (peers[socketId]) { // remove from the connection from the Peers 
-        peers[socketId].destroy();
-      }
-      delete peers[socketId];
+  if (videoContainer && videoElement) {
+    const tracks = videoElement.srcObject.getTracks(); // get all the videos playing in that id and stop them;
+    tracks.forEach(track => track.stop());
+    videoElement.srcObject = null;
+    videoContainer.removeChild(videoElement);
+    videoContainer.parentNode.removeChild(videoContainer); // remove the video container it self from the videosContainer;
+    if (peers[socketId]) { // remove from the connection from the Peers 
+      peers[socketId].destroy();
     }
-  } catch (error) {
-    console.log(error);
+    delete peers[socketId];
   }
 }

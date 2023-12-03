@@ -3,8 +3,11 @@ const http = require('http');
 const { v4: uuidv4 } = require('uuid');
 const cors = require('cors');
 const twilio = require('twilio');
+const dotenv = require('dotenv')
+dotenv.config();
 
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 8080;
+
 const app = express();
 
 const server = http.createServer(app);
@@ -107,7 +110,7 @@ const signalingHandler = (data, socket) => {
 
 const initializeConnectionHandler = (data, socket) => {
   const { connUserSocketId } = data;
-  const initData = {connUserSocketId: socket.id};
+  const initData = { connUserSocketId: socket.id };
   io.to(connUserSocketId).emit('conn-init', initData);
 }
 
