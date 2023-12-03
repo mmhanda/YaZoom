@@ -19,10 +19,10 @@ export const connectWithSocketIoServer = async () => {
     store.dispatch(setParticipants(connectedUsers));
   });
   socket.on("conn-prepare", (data) => {
-    const {connUserSocketId} = data;
+    const { connUserSocketId } = data;
     WebRTCHandler.prepareNewPeerConnection(connUserSocketId, false);
     // inform the user which just joined that we are prepared for incoming connection
-    socket.emit('conn-init', {connUserSocketId: connUserSocketId});
+    socket.emit('conn-init', { connUserSocketId: connUserSocketId });
   });
   socket.on('conn-signal', (data) => {
     WebRTCHandler.handelSignalingData(data);
@@ -40,6 +40,7 @@ export const createRoom = async (identity) => {
   const data = {
     identity,
   }
+  store.dispatch(setParticipants([data]));
   socket.emit('create-room', data);
 }
 

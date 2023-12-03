@@ -386,6 +386,7 @@ video {
   padding: 18px 38px;
   background: linear-gradient(168.68deg, #0052c9 1.12%, #0a91db 100%);
   border-radius: 0px 0px 15px 15px;
+  user-select: all;
 }
 
 .video_track_container:first-child:nth-last-child(1) {

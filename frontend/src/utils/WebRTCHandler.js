@@ -5,11 +5,11 @@ import Peer from "simple-peer";
 
 const defaultConstrains = {
   audio: true,
-  video: true, // for full quality
-  // video: {
-  //   width: "480",
-  //   height: "300",
-  // },
+  // video: true, // for full quality
+  video: {
+    width: "480",
+    height: "300",
+  },
 }
 
 let localStream;
