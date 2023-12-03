@@ -135,7 +135,7 @@ export const removePeerConnection = (data) => {
     videoElement.srcObject = null;
     videoContainer.removeChild(videoElement);
     videoContainer.parentNode.removeChild(videoContainer); // remove the video container it self from the videosContainer;
-    if (peers[socketId]) { // remove from the connection from the Peers 
+    if (peers[socketId]) { // remove from the connection from the Peers
       peers[socketId].destroy();
     }
     delete peers[socketId];
@@ -149,4 +149,30 @@ export const toggleMic = (MuteUnmute) => {
 export const toggleCamera = (EnableDisable) => {
   localStream.getVideoTracks()[0].enabled = EnableDisable;
   console.log(localStream.getVideoTracks()[0].enabled);
+}
+
+const switchVideoTracks = (stream) => {
+  for (let socket_id in peers) {
+    for (let index in peers[socket_id].streams[0].getTracks()) {
+      for (let index_ in stream.getTracks()) {
+        if (peers[socket_id].streams[0].getTracks()[index].kind
+          === stream.getTracks()[index_].kind) {
+          peers[socket_id].replaceTrack(
+            peers[socket_id].streams[0].getTracks()[index], // the stream that i want to replace
+            stream.getTracks()[index_], // the stream that i want to replace with
+            peers[socket_id].streams[0] // this arg in which streams table you want to change
+          );
+          break;
+        }
+      }
+    }
+  }
+}
+
+export const toggleScreenShare = (isScreenSharingActive, screenSharingStream = null) => {
+  if (isScreenSharingActive) {
+    switchVideoTracks(localStream);
+  } else {
+    switchVideoTracks(screenSharingStream);
+  }
 }
