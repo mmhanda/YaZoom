@@ -22,7 +22,7 @@ app.get('/api/room-exists/:roomId', (req, res) => {
   const room = rooms.find(room => room.id === roomId);
 
   if (room) {
-    if (room.connectedUsers.length > 3) {
+    if (room.connectedUsers.length > 9) {
       return res.json({ roomExists: true, full: true })
     } else {
       return res.json({ roomExists: true, full: false })

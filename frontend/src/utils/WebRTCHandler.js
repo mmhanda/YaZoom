@@ -5,11 +5,11 @@ import Peer from "simple-peer";
 
 const defaultConstrains = {
   audio: true,
-  // video: true, // for full quality
-  video: {
-    width: "480",
-    height: "300",
-  },
+  video: true, // for full quality
+  // video: {
+  //   width: "480",
+  //   height: "300",
+  // },
 }
 
 let localStream;
@@ -94,8 +94,8 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     config: configuration,
     stream: localStream,
   })
-
   peers[connUserSocketId].on('signal', (data) => {
+    // sending the offer (spd information will be sent and (ice candidate will be exchanged)) from the initiator AND receiving the offer in here
     const signalData = {
       signal: data,
       connUserSocketId: connUserSocketId,
@@ -104,11 +104,18 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     wss.signalPeerData(signalData);
   });
 
-
   peers[connUserSocketId].on('stream', (stream) => {
     addStream(stream, connUserSocketId);
     streams = [...streams, stream];
   });
+
+  peers[connUserSocketId].on(('error'), (error) => {
+    console.log("Peer Connection Error: ", error);
+  })
+
+  peers[connUserSocketId].on('close', error => {
+    console.log("Peer Connection Closed: ", error);
+  })
 };
 
 export const handelSignalingData = (data) => {
