@@ -7,7 +7,7 @@ const RoomLabel = ({ roomId }) => {
     navigator.clipboard.writeText(roomId);
     toast.success('Meeting ID copied!', {
       position: toast.POSITION.TOP_RIGHT,
-      autoClose: 1500,
+      autoClose: 1000,
       style: {
         backgroundColor: "#007BFF",
         color: "#FFFFFF",
