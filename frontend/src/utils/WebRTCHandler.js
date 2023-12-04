@@ -1,5 +1,5 @@
 import store from "../store/store";
-import { setOverLay } from "../store/actions";
+import { setOverLay, setMessages } from "../store/actions";
 import * as wss from "./wss";
 import Peer from "simple-peer";
 
@@ -86,6 +86,36 @@ const getConfigurations = () => {
   }
 };
 
+const appendNewMessage = (data) => {
+  const previousMessage = store.getState().app.messages;
+  store.dispatch(setMessages([...previousMessage, data]));
+  // console.log(data);
+}
+
+export const sendMessagesUsingDataChannel = (messageContent) => {
+
+  const identity = store.getState().app.identity;
+
+  const localMessageData = {
+    content: messageContent,
+    identity,
+    messageCreatedByMe: true,
+  }
+
+  appendNewMessage(localMessageData);
+
+  const Msg = {
+    content: messageContent,
+    identity,
+  }
+  // console.log("Msg ", Msg);
+  const stringifyMsg = JSON.stringify(Msg);
+  for (let socketId in peers) {
+    console.log("send!");
+    peers[socketId].send(stringifyMsg);
+  }
+}
+
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   const configuration = getConfigurations();
 
@@ -116,6 +146,11 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   peers[connUserSocketId].on('close', error => {
     console.log("Peer Connection Closed: ", error);
   })
+
+  peers[connUserSocketId].on(('data'), (data) => {
+    console.log("data ", JSON.parse(data));
+    appendNewMessage(JSON.parse(data));
+  });
 };
 
 export const handelSignalingData = (data) => {

@@ -1,55 +1,6 @@
-const messages = [
-  {
-    identity: "John Doe",
-    content: "Hello there!",
-    messageCreatedByMe: true,
-  },
-  {
-    identity: "John Doe",
-    content: "Hi John!",
-    messageCreatedByMe: true,
-  },
-  {
-    identity: "John Doe",
-    content: "How are you?",
-    messageCreatedByMe: true,
-  },
-  {
-    identity: "Alice Smith",
-    content: "I'm good, thanks!",
-    messageCreatedByMe: false,
-  },
-  {
-    identity: "John Doe",
-    content: "Glad to hear that!",
-    messageCreatedByMe: true,
-  },
-  {
-    identity: "Alice Smith",
-    content: "What about you?",
-    messageCreatedByMe: false,
-  },
-  {
-    identity: "John Doe",
-    content: "I'm doing well too.",
-    messageCreatedByMe: true,
-  },
-  {
-    identity: "Alice Smith",
-    content: "That's great!",
-    messageCreatedByMe: false,
-  },
-  {
-    identity: "John Doe",
-    content: "Any plans for the weekend?",
-    messageCreatedByMe: true,
-  },
-  {
-    identity: "Alice Smith",
-    content: "Not yet, what about you?",
-    messageCreatedByMe: false,
-  },
-];
+import { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import store from "../../store/store";
 
 const Message = ({ author, content, sameAuthor, messageCreatedByMe }) => {
   const alignClass = messageCreatedByMe ? "message_align_right" : "message_align_left";
@@ -62,10 +13,17 @@ const Message = ({ author, content, sameAuthor, messageCreatedByMe }) => {
   </div>
 }
 
-export const Messages = () => {
+export const Messages = ({ app }) => {
+
+  const [messages_, setMessages_] = useState([]);
+  const { messages } = app;
+  useEffect(() => {
+    setMessages_(messages);
+  }, [app.messages]);
+
   return (
     <div className="messages_container">
-      {messages.map((message, index) => {
+      {messages_.map((message, index) => {
         const sameAuthor = index > 0 && message.identity === messages[index - 1].identity;
         return (
           <Message key={`${message.content}${index}`}
@@ -79,4 +37,10 @@ export const Messages = () => {
   );
 };
 
-export default Messages;
+const mapStoreStateToProps = (state) => {
+  return {
+    ...state,
+  };
+};
+
+export default connect(mapStoreStateToProps)(Messages);
