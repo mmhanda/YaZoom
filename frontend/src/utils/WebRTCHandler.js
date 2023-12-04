@@ -66,7 +66,7 @@ export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, ro
     try {
       isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
     } catch (error) {
-
+      console.log(error);
     }
   }).catch(error => {
     console.log(error);

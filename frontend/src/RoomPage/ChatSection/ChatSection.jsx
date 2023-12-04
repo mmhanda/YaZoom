@@ -1,7 +1,11 @@
+import ChatLabel from "./ChatLabel";
+import Messages from './Messages';
+
 const ChatSection = () => {
   return (
     <div className='chat_section_container'>
-      ChatSection
+      <ChatLabel />
+      <Messages />
     </div>
   );
 };

@@ -11,6 +11,7 @@ import RoomPage from './RoomPage/RoomPage';
 import IntroductionPage from './IntroductionPage/IntroductionPage';
 import ReactDOM from 'react-dom/client';
 import "./index.css";
+import "./RoomPage/RoomPage.css";
 
 (window).process = {
   env: { DEBUG: undefined },
