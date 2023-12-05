@@ -1,6 +1,7 @@
 import { useState } from "react";
-import SendMsgButton from "../../resources/images/sendMessageButton.svg";
-import * as WebRTCHandler from "../../utils/WebRTCHandler";
+import SendMsgButton from "../../resources/images/sendMessageButton.svg"
+import { setMessages } from "../../store/actions";
+import store from "../../store/store";
 
 const NewMessage = () => {
 
@@ -11,8 +12,14 @@ const NewMessage = () => {
 
   const sendMsg = () => {
     if (message.length > 0 && message.replace(/\s/g, '').length) {
-      // console.log("Send!");
-      WebRTCHandler.sendMessagesUsingDataChannel(message);
+      console.log("Send!");
+      const message_ = {
+        identity: store.getState().app.identity,
+        content: message,
+        messageCreatedByMe: true,
+      }
+      const oldMessages = store.getState().app.messages;
+      store.dispatch(setMessages([...oldMessages, message_]));
       setMessage('');
     }
   };
@@ -34,7 +41,7 @@ const NewMessage = () => {
         onKeyDown={handelKeyPressed} />
       <img className="new_message_button"
         src={SendMsgButton}
-        onClick={sendMsg} />
+        onClick={sendMsg} alt="new_message_button" />
     </div>
   );
 };

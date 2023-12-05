@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import store from "../../store/store";
+import { useEffect, useState } from "react";
 
 const Message = ({ author, content, sameAuthor, messageCreatedByMe }) => {
   const alignClass = messageCreatedByMe ? "message_align_right" : "message_align_left";
@@ -13,18 +12,17 @@ const Message = ({ author, content, sameAuthor, messageCreatedByMe }) => {
   </div>
 }
 
-export const Messages = ({ app }) => {
+export const Messages = (props) => {
 
   const [messages_, setMessages_] = useState([]);
-  const { messages } = app;
   useEffect(() => {
-    setMessages_(messages);
-  }, [app.messages]);
+    setMessages_(props.app.messages);
+  }, [props.app.messages]);
 
   return (
     <div className="messages_container">
       {messages_.map((message, index) => {
-        const sameAuthor = index > 0 && message.identity === messages[index - 1].identity;
+        const sameAuthor = index > 0 && message.identity === messages_[index - 1].identity;
         return (
           <Message key={`${message.content}${index}`}
             author={message.identity}
