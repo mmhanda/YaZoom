@@ -59,18 +59,19 @@ const addStream = (stream, connUserSocketId) => {
 }
 
 export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null) => {
-  await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
-    localStream = stream;
-    showLocalVideoPreview(localStream);
-    store.dispatch(setOverLay(false));
-    try {
-      isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
-    } catch (error) {
-      console.log(error);
-    }
-  }).catch(error => {
-    console.log(error);
-  })
+  // await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
+  localStream = null;
+  // localStream = stream;
+  showLocalVideoPreview(localStream);
+  store.dispatch(setOverLay(false));
+  //   try {
+  //     isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }).catch(error => {
+  //   console.log(error);
+  // })
 }
 
 let peers = {};
