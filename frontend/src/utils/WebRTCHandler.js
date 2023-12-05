@@ -1,5 +1,5 @@
 import store from "../store/store";
-import { setOverLay } from "../store/actions";
+import { setOverLay, setMessages } from "../store/actions";
 import * as wss from "./wss";
 import Peer from "simple-peer";
 
@@ -86,6 +86,35 @@ const getConfigurations = () => {
   }
 };
 
+const appendNewMessage = (messageData) => {
+  const messages = store.getState().app.messages;
+  store.dispatch(setMessages([...messages, messageData]));
+}
+
+export const sendMessageUsingDataChannel = (messageContent) => {
+  const identity = store.getState().app.identity;
+
+  const message = {
+    identity,
+    content: messageContent,
+    messageCreatedByMe: true,
+  }
+  appendNewMessage(message);
+
+  const messageData = {
+    identity,
+    content: messageContent,
+  }
+  const stringify = JSON.stringify(messageData);
+
+  for (let socketId in peers) {
+    console.log("sending");
+    peers[socketId].send(stringify);
+  };
+}
+
+const messengerChannel = 'messenger';
+
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   const configuration = getConfigurations();
 
@@ -93,6 +122,7 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     initiator: isInitiator,
     config: configuration,
     stream: localStream,
+    channelName: messengerChannel,
   })
   peers[connUserSocketId].on('signal', (data) => {
     // sending the offer (spd information will be sent and (ice candidate will be exchanged)) from the initiator AND receiving the offer in here
@@ -108,6 +138,12 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     addStream(stream, connUserSocketId);
     streams = [...streams, stream];
   });
+
+  peers[connUserSocketId].on('data', data => {
+    console.log("HERE");
+    const messageData = JSON.parse(data);
+    appendNewMessage(messageData);
+  })
 
   peers[connUserSocketId].on(('error'), (error) => {
     console.log("Peer Connection Error: ", error);

@@ -1,7 +1,6 @@
 import { useState } from "react";
 import SendMsgButton from "../../resources/images/sendMessageButton.svg"
-import { setMessages } from "../../store/actions";
-import store from "../../store/store";
+import * as WebRTCHandler from "../../utils/WebRTCHandler";
 
 const NewMessage = () => {
 
@@ -12,14 +11,8 @@ const NewMessage = () => {
 
   const sendMsg = () => {
     if (message.length > 0 && message.replace(/\s/g, '').length) {
-      console.log("Send!");
-      const message_ = {
-        identity: store.getState().app.identity,
-        content: message,
-        messageCreatedByMe: true,
-      }
-      const oldMessages = store.getState().app.messages;
-      store.dispatch(setMessages([...oldMessages, message_]));
+      // console.log("Send!");
+      WebRTCHandler.sendMessageUsingDataChannel(message);
       setMessage('');
     }
   };
