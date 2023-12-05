@@ -91,6 +91,7 @@ const appendNewMessage = (messageData) => {
   store.dispatch(setMessages([...messages, messageData]));
 }
 
+const messengerChannel = 'messenger';
 export const sendMessageUsingDataChannel = (messageContent) => {
   const identity = store.getState().app.identity;
 
@@ -113,8 +114,6 @@ export const sendMessageUsingDataChannel = (messageContent) => {
   };
 }
 
-const messengerChannel = 'messenger';
-
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   const configuration = getConfigurations();
 
@@ -123,7 +122,41 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     config: configuration,
     stream: localStream,
     channelName: messengerChannel,
-  })
+  });
+
+  console.log(`Peer for socketId ${connUserSocketId} initialized:`, peers[connUserSocketId]);
+
+  // Explicitly create a data channel using WebRTC API
+  const dataChannel = peers[connUserSocketId]._pc.createDataChannel(messengerChannel);
+
+  if (dataChannel) {
+    dataChannel.onopen = () => {
+      console.log(`Data channel opened for socketId ${connUserSocketId}`);
+    };
+
+    dataChannel.onmessage = (event) => {
+      console.log(`Received data from socketId ${connUserSocketId}:`, event.data);
+      const messageData = JSON.parse(event.data);
+      appendNewMessage(messageData);
+    };
+
+    peers[connUserSocketId].dataChannel = dataChannel;
+  }
+
+  peers[connUserSocketId].on('connect', function () {
+    console.log('connect');
+  });
+
+  peers[connUserSocketId].on('data', (data) => {
+    console.log("Receiving!");
+    const messageData = JSON.parse(data);
+    appendNewMessage(messageData);
+  });
+
+  peers[connUserSocketId].on('message', message => {
+    console.log("Receiving message Receiving message Receiving message:", message);
+  });
+
   peers[connUserSocketId].on('signal', (data) => {
     // sending the offer (spd information will be sent and (ice candidate will be exchanged)) from the initiator AND receiving the offer in here
     const signalData = {
@@ -139,21 +172,14 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     streams = [...streams, stream];
   });
 
-  peers[connUserSocketId].on('data', data => {
-    console.log("HERE");
-    const messageData = JSON.parse(data);
-    appendNewMessage(messageData);
-  })
-
   peers[connUserSocketId].on(('error'), (error) => {
     console.log("Peer Connection Error: ", error);
-  })
+  });
 
   peers[connUserSocketId].on('close', error => {
     console.log("Peer Connection Closed: ", error);
-  })
+  });
 };
-
 export const handelSignalingData = (data) => {
   // inside signal it checks for offer and answer
   peers[data.connUserSocketId].signal(data.signal);
