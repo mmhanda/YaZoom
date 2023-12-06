@@ -12,6 +12,11 @@ const defaultConstrains = {
   // },
 }
 
+const connectOnlyWithAudioConst = {
+  audio: true,
+  video: false,
+}
+
 let localStream;
 
 const showLocalVideoPreview = (stream) => {
@@ -29,6 +34,9 @@ const showLocalVideoPreview = (stream) => {
   };
 
   videoContainer.appendChild(videoElement);
+  if (store.getState().app.connectOnlyWithAudio) {
+    videoContainer.appendChild(getOnlyWithAudioLabel());
+  }
   videosContainer.appendChild(videoContainer);
 }
 
@@ -55,16 +63,33 @@ const addStream = (stream, connUserSocketId) => {
   })
 
   videoContainer.appendChild(videoElement);
+
+  const participants = store.getState().app.participants;
+  const participant = participants.find((p) => p.socketId === connUserSocketId);
+  if (participant?.connectOnlyWithAudio) {
+    videoContainer.appendChild(getOnlyWithAudioLabel());
+  }
   videosContainer.appendChild(videoContainer);
 }
 
-export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null) => {
-  await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
+const getOnlyWithAudioLabel = () => {
+  const labelContainer = document.createElement('div');
+  labelContainer.classList.add("label_only_audio_container");
+  const label = document.createElement('p');
+  label.classList.add('label_only_audio_text');
+  label.innerHTML = 'Only Audio';
+
+  labelContainer.appendChild(label);
+  return labelContainer;
+}
+
+export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null, connectOnlyWithAudio) => {
+  await navigator.mediaDevices.getUserMedia(connectOnlyWithAudio ? connectOnlyWithAudioConst : defaultConstrains).then(stream => {
     localStream = stream;
     showLocalVideoPreview(localStream);
     store.dispatch(setOverLay(false));
     try {
-      isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
+      isRoomHots ? wss.createRoom(identity, connectOnlyWithAudio) : wss.joinRoom(identity, roomId, connectOnlyWithAudio);
     } catch (error) {
       console.log(error);
     }

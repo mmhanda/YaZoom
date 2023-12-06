@@ -54,7 +54,7 @@ body {
 
 .new_message_button {
   position: absolute;
-  right: 10%;
+  right: 15%;
 }
 
 .messages_container {
@@ -474,9 +474,16 @@ video {
   position: absolute;
   top: 0%;
   left: 0%;
+  background-color: #9ca5ab;
+  border-radius: 18px;
 }
 
 .label_only_audio_container {
+  font-size: 18px;
+  color: black;
+}
+
+.label_only_audio_text {
   font-size: 18px;
   color: black;
 }

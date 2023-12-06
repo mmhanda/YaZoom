@@ -37,18 +37,20 @@ export const connectWithSocketIoServer = async () => {
   })
 }
 
-export const createRoom = async (identity) => {
+export const createRoom = async (identity, connectOnlyWithAudio) => {
   const data = {
     identity,
+    connectOnlyWithAudio,
   }
   store.dispatch(setParticipants([data]));
   socket.emit('create-room', data);
 }
 
-export const joinRoom = (identity, roomId) => {
+export const joinRoom = (identity, roomId, connectOnlyWithAudio) => {
   const data = {
     identity,
     roomId,
+    connectOnlyWithAudio,
   }
   socket.emit('join-room', data);
 }

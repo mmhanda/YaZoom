@@ -34,7 +34,7 @@ const NewMessage = () => {
         onKeyDown={handelKeyPressed} />
       <img className="new_message_button"
         src={SendMsgButton}
-        onClick={sendMsg} alt="new_message_button" />
+        onClick={sendMsg} alt="new_message" />
     </div>
   );
 };

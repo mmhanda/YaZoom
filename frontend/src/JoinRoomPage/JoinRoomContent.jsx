@@ -6,11 +6,16 @@ import { setConnectOnlyWithAudio, setIdentity, setRoomId } from "../store/action
 import { connect } from "react-redux";
 import ErrorMsg from "./ErrorMsg";
 import JoinRoomButtons from "./JoinRoomButtons";
-import { getRoomExist } from "../utils/api";
+import { getRoomExist, getRoomParticipants } from "../utils/api";
 import { useNavigate } from "react-router-dom";
+import store from "../store/store";
 
 const getRoomExists = async (roomId) => {
   return await getRoomExist(roomId);
+}
+
+const getRoomParticipants_ = async (roomId) => {
+  return await getRoomParticipants(roomId);
 }
 
 const JoinRoomContent = (props) => {
@@ -20,12 +25,21 @@ const JoinRoomContent = (props) => {
   const { isRoomHost, connectOnlyWithAudio } = useSelector(
     (state) => state.app
   );
-  const { setConnectOnlyWithAudio, setIdentity, setRoomId } = props;
+  const { setConnectOnlyWithAudio, setRoomId, identity } = props;
   const navigate = useNavigate();
 
   const join_room = async () => {
-    const response = await getRoomExists(roomIdValue);
+    const response = await getRoomExists(roomIdValue, identity);
     const { roomExists, full } = response;
+
+    if (roomExists) {
+      const participants = await getRoomParticipants_(roomIdValue);
+      const participant = participants.participants.find((participant) => participant.identity === nameValue);
+      if (participant) {
+        setError("Name Already Taken");
+        return;
+      }
+    }
 
     setRoomId(roomIdValue);
     if (roomExists) {
@@ -46,7 +60,7 @@ const JoinRoomContent = (props) => {
   }
 
   const handelJoinRoom = async () => {
-    setIdentity(nameValue);
+    store.dispatch(setIdentity(nameValue));
     if (isRoomHost) {
       create_room();
     } else {

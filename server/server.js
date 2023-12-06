@@ -32,6 +32,12 @@ app.get('/api/room-exists/:roomId', (req, res) => {
   }
 })
 
+app.get('/api/room-participants/:roomId', (req, res) => {
+  const { roomId } = req.params;
+  const room = rooms.find(room => room.id === roomId);
+  return res.json({ participants: room.connectedUsers });
+});
+
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
@@ -40,7 +46,7 @@ const io = require('socket.io')(server, {
 });
 
 const handleCreateNewRoom = (data, socket) => {
-  const { identity } = data;
+  const { identity, connectOnlyWithAudio } = data;
   const roomId = uuidv4();
 
   const newUser = {
@@ -48,6 +54,7 @@ const handleCreateNewRoom = (data, socket) => {
     id: uuidv4(),
     socketId: socket.id,
     roomId,
+    connectOnlyWithAudio,
   }
 
   connectedUsers = [...connectedUsers, newUser];
@@ -63,13 +70,14 @@ const handleCreateNewRoom = (data, socket) => {
 }
 
 const handelJoinRoom = (data, socket) => {
-  const { identity, roomId } = data;
+  const { identity, roomId, connectOnlyWithAudio } = data;
 
   const newUser = {
     identity,
     id: uuidv4(),
     socketId: socket.id,
     roomId,
+    connectOnlyWithAudio,
   }
 
   const room = rooms.find(room => room.id == roomId);
