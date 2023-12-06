@@ -12,6 +12,8 @@ import IntroductionPage from './IntroductionPage/IntroductionPage';
 import ReactDOM from 'react-dom/client';
 import "./index.css";
 
+import Compo from "./compo/compo";
+
 (window).process = {
   env: { DEBUG: undefined },
   nextTick: function () {
@@ -25,6 +27,7 @@ const router = createBrowserRouter(
       <Route path='/' index={true} element={<IntroductionPage />} />
       <Route path='/join-room' element={<JoinRoomPage />} />
       <Route path='/room' element={<RoomPage />} />
+      <Route path='/compo' element={<Compo />} />
     </Route>
   ))
 const root = ReactDOM.createRoot(document.getElementById('root'));

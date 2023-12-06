@@ -59,19 +59,18 @@ const addStream = (stream, connUserSocketId) => {
 }
 
 export const getLocalPrevAndInitRoomConnection = async (isRoomHots, identity, roomId = null) => {
-  // await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
-  localStream = null;
-  // localStream = stream;
-  showLocalVideoPreview(localStream);
-  store.dispatch(setOverLay(false));
-  //   try {
-  //     isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // }).catch(error => {
-  //   console.log(error);
-  // })
+  await navigator.mediaDevices.getUserMedia(defaultConstrains).then(stream => {
+    localStream = stream;
+    showLocalVideoPreview(localStream);
+    store.dispatch(setOverLay(false));
+    try {
+      isRoomHots ? wss.createRoom(identity) : wss.joinRoom(identity, roomId);
+    } catch (error) {
+      console.log(error);
+    }
+  }).catch(error => {
+    console.log(error);
+  })
 }
 
 let peers = {};
@@ -81,7 +80,7 @@ const getConfigurations = () => {
   return {
     iceServers: [
       {
-        urls: 'stun:stun.l.google.com:19302'
+        urls: 'stun:stun.l.google.com:19302',
       }
     ]
   }
@@ -125,31 +124,17 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     channelName: messengerChannel,
   });
 
-  console.log(`Peer for socketId ${connUserSocketId} initialized:`, peers[connUserSocketId]);
-
-  // Explicitly create a data channel using WebRTC API
   const dataChannel = peers[connUserSocketId]._pc.createDataChannel(messengerChannel);
 
-  if (dataChannel) {
-    dataChannel.onopen = () => {
-      console.log(`Data channel opened for socketId ${connUserSocketId}`);
-    };
+  peers[connUserSocketId].dataChannel = dataChannel;
+  dataChannel.onmessage = (event) => {
+    console.log(`Received data from socketId ${connUserSocketId}:`, event.data);
+    const messageData = JSON.parse(event.data);
+    appendNewMessage(messageData);
+  };
 
-    dataChannel.onmessage = (event) => {
-      console.log(`Received data from socketId ${connUserSocketId}:`, event.data);
-      const messageData = JSON.parse(event.data);
-      appendNewMessage(messageData);
-    };
-
-    peers[connUserSocketId].dataChannel = dataChannel;
-  }
-
-  peers[connUserSocketId].on('connect', function () {
-    console.log('connect');
-  });
 
   peers[connUserSocketId].on('data', (data) => {
-    console.log("Receiving!");
     const messageData = JSON.parse(data);
     appendNewMessage(messageData);
   });
@@ -181,6 +166,7 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
     console.log("Peer Connection Closed: ", error);
   });
 };
+
 export const handelSignalingData = (data) => {
   // inside signal it checks for offer and answer
   peers[data.connUserSocketId].signal(data.signal);

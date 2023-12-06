@@ -115,6 +115,7 @@ const initializeConnectionHandler = (data, socket) => {
 }
 
 io.on("connection", (socket) => {
+  console.error(socket.id);
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
   });

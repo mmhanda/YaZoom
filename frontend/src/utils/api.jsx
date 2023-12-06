@@ -1,6 +1,8 @@
 import axios from 'axios'
 
-const serverApi = "http://localhost:5002/api"
+// const serverApi = "http://localhost:5002/api"
+const serverApi = "http://10.30.177.35:5002/api"
+
 
 let bl = false;
 
