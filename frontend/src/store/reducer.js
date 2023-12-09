@@ -8,6 +8,9 @@ const initialState = {
   showOverlay: true,
   participants: [],
   messages: [],
+  activeConversations: null,
+  directChatHistory: [],
+  socketId: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -46,6 +49,21 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         messages: action.messages,
+      }
+    case Actions.SET_ACTIVE_CONVERSATIONS:
+      return {
+        ...state,
+        activeConversations: action.conversations,
+      }
+    case Actions.SET_DIRECT_CHAT_HISTORY:
+      return {
+        ...state,
+        directChatHistory: action.directChat,
+      }
+    case Actions.SET_SOCKET_ID:
+      return {
+        ...state,
+        socketId: action.socketId,
       }
     default:
       return state;

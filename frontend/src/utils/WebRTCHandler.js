@@ -69,6 +69,7 @@ const addStream = (stream, connUserSocketId) => {
   if (participant?.connectOnlyWithAudio) {
     videoContainer.appendChild(getOnlyWithAudioLabel());
   }
+  // else videoContainer.style.position = 'static'
   videosContainer.appendChild(videoContainer);
 }
 

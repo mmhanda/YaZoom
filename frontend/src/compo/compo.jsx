@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import profileButton from "./profileButton.svg";
 import privateChatButton from "./privateChatButton.svg";
 import gameButton from "./gameButton.svg";
@@ -8,6 +8,7 @@ import banButton from "./banButton.svg";
 import downFlesh from "./downFlesh.svg";
 import copyUserId from "./copyUserId.svg";
 import oalaoui from "./oalaoui.jpg";
+import lock from "./lock.svg";
 
 const USERNAME = 'OALAOUI';
 const USERId = '122165';
@@ -98,4 +99,37 @@ const ShowUserDetails = () => {
   );
 };
 
-export default ShowUserDetails;
+// export default ShowUserDetails;
+
+
+const RoomPasswordForm = () => {
+  const passwordRef = useRef();
+
+  const submitHandler = (event) => {
+    event.preventDefault();
+    console.log(passwordRef.current.value);
+  };
+
+  return (
+    <div className='w-screen h-screen container mx-auto bg-blue-600 flex justify-center items-center relative'>
+      <div className="relative flex w-[606px] h-[350px] bg-[#3E394D] rounded-[23px]">
+        <p className="absolute text-white font-bold text-2xl uppercase left-[22.5%] py-4">Room Password Required</p>
+        <div className="absolute text-center text-white opacity-75 px-14 py-4 my-1 translate-y-9">To join this room and start chatting, please enter the room password below. The password ensures a secure and private conversation within the room.</div>
+        <form onSubmit={submitHandler}>
+          <img src={lock} className="absolute left-[105px] top-[165px]" />
+          <input
+            ref={passwordRef}
+            type="password"
+            className="absolute rounded-[11px] h-[58px] w-[439px] bg-[#00000033] translate-x-20 translate-y-36 p-1 m-1 text-left"
+            title="PASSWORD"
+            placeholder="PASSWORD"
+            style={{ paddingLeft: '55px' }}
+          />
+          <button type="submit" className="absolute rounded-[11px] h-[58px] w-[439px] bg-[#A970E3] font-bold text-white text-opacity-90 translate-x-20 translate-y-60 p-1 m-1">JOIN NOW</button>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export default RoomPasswordForm;
