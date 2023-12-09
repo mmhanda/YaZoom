@@ -11,7 +11,6 @@ const NewMessage = () => {
 
   const sendMsg = () => {
     if (message.length > 0 && message.replace(/\s/g, '').length) {
-      // console.log("Send!");
       WebRTCHandler.sendMessageUsingDataChannel(message);
       setMessage('');
     }

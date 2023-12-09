@@ -1,5 +1,6 @@
 import { useState } from "react";
 import SendMsgButton from "../../../../resources/images/sendMessageButton.svg";
+import * as wss from '../../../../utils/wss';
 
 const NewMessage = ({ activeConversation, identity }) => {
 
@@ -10,7 +11,11 @@ const NewMessage = ({ activeConversation, identity }) => {
 
   const sendMsg = () => {
     if (message.length > 0 && message.replace(/\s/g, '').length) {
-      // WebRTCHandler.sendMessageUsingDataChannel(message);
+      wss.sendPrivateMessage({
+        receiverSocketId: activeConversation.socketId,
+        identity: identity,
+        messageContent: message,
+      })
       setMessage('');
     }
   };

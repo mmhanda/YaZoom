@@ -135,7 +135,6 @@ export const sendMessageUsingDataChannel = (messageContent) => {
   const stringify = JSON.stringify(messageData);
 
   for (let socketId in peers) {
-    console.log("sending");
     peers[socketId].send(stringify);
   };
 }
@@ -154,7 +153,6 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
 
   peers[connUserSocketId].dataChannel = dataChannel;
   dataChannel.onmessage = (event) => {
-    console.log(`Received data from socketId ${connUserSocketId}:`, event.data);
     const messageData = JSON.parse(event.data);
     appendNewMessage(messageData);
   };
@@ -163,10 +161,6 @@ export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {
   peers[connUserSocketId].on('data', (data) => {
     const messageData = JSON.parse(data);
     appendNewMessage(messageData);
-  });
-
-  peers[connUserSocketId].on('message', message => {
-    console.log("Receiving message Receiving message Receiving message:", message);
   });
 
   peers[connUserSocketId].on('signal', (data) => {
@@ -223,7 +217,6 @@ export const toggleMic = (MuteUnmute) => {
 
 export const toggleCamera = (EnableDisable) => {
   localStream.getVideoTracks()[0].enabled = EnableDisable;
-  console.log(localStream.getVideoTracks()[0].enabled);
 }
 
 const switchVideoTracks = (stream) => {

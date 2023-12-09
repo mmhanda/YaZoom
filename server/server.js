@@ -122,8 +122,26 @@ const initializeConnectionHandler = (data, socket) => {
   io.to(connUserSocketId).emit('conn-init', initData);
 }
 
+const handelDirectMessage = (data, socket) => {
+  if (connectedUsers.find(connUser => connUser.socketId === data.receiverSocketId)) {
+    const receiverData = {
+      authorSocketId: socket.id,
+      messageContent: data.messageContent,
+      isAuthor: false,
+      identity: data.identity,
+    }
+    io.to(data.receiverSocketId).emit('direct-message', receiverData);
+    const authorData = {
+      receiverSocketId: data.receiverSocketId,
+      messageContent: data.messageContent,
+      isAuthor: true,
+      identity: data.identity,
+    }
+    socket.emit('direct-message', authorData);
+  }
+}
+
 io.on("connection", (socket) => {
-  console.error(socket.id);
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
   });
@@ -139,6 +157,9 @@ io.on("connection", (socket) => {
   socket.on("conn-init", data => {
     initializeConnectionHandler(data, socket);
   });
+  socket.on("direct-message", (data) => {
+    handelDirectMessage(data, socket);
+  })
 })
 
 server.listen(PORT, () => {
