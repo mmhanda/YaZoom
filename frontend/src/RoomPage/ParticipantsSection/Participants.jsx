@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { setActiveConversations } from '../../store/actions';
 
-const SinglePart = (props) => {
+const SingleParticipant = (props) => {
   const { identity, LastItem, setActionConversation, socketId, participant } = props;
 
   const handelOpenChatBox = () => {
@@ -29,7 +29,7 @@ const Participants = ({ app, setActionConversation }) => {
   return (
     <div className="participants_container">
       {data.map((participant, index) => (
-        <SinglePart
+        <SingleParticipant
           key={participant.identity}
           LastItem={data.length === index + 1}
           participant={participant}

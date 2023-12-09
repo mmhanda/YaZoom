@@ -141,6 +141,11 @@ const handelDirectMessage = (data, socket) => {
   }
 }
 
+const handleGlobalMsgs = (data, socket) => {
+  const { identity, roomId, content } = data;
+  io.to(roomId).except(socket.id).emit("global-message", { identity, content });
+}
+
 io.on("connection", (socket) => {
   socket.on('create-room', (data) => {
     handleCreateNewRoom(data, socket);
@@ -159,6 +164,9 @@ io.on("connection", (socket) => {
   });
   socket.on("direct-message", (data) => {
     handelDirectMessage(data, socket);
+  })
+  socket.on('global-message', data => {
+    handleGlobalMsgs(data, socket);
   })
 })
 

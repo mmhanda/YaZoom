@@ -7,7 +7,7 @@ import { appendToChatHistory } from './DirectMessages';
 // const SERVER = "http://localhost:5002";
 const SERVER = "http://10.30.177.35:5002";
 
-let socket = null;
+export let socket = null;
 
 export const connectWithSocketIoServer = async () => {
   socket = io(SERVER);
@@ -40,6 +40,9 @@ export const connectWithSocketIoServer = async () => {
   })
   socket.on('direct-message', (data) => {
     appendToChatHistory(data);
+  })
+  socket.on('global-message', data => {
+    WebRTCHandler.appendNewMessage(data);
   })
 }
 

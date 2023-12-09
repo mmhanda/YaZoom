@@ -112,12 +112,14 @@ const getConfigurations = () => {
   }
 };
 
-const appendNewMessage = (messageData) => {
+export const appendNewMessage = (messageData) => {
+  // console.log()
   const messages = store.getState().app.messages;
   store.dispatch(setMessages([...messages, messageData]));
 }
 
 const messengerChannel = 'messenger';
+
 export const sendMessageUsingDataChannel = (messageContent) => {
   const identity = store.getState().app.identity;
 
@@ -131,12 +133,10 @@ export const sendMessageUsingDataChannel = (messageContent) => {
   const messageData = {
     identity,
     content: messageContent,
+    roomId: store.getState().app.roomId,
   }
-  const stringify = JSON.stringify(messageData);
 
-  for (let socketId in peers) {
-    peers[socketId].send(stringify);
-  };
+  wss.socket.emit('global-message', messageData);
 }
 
 export const prepareNewPeerConnection = (connUserSocketId, isInitiator) => {

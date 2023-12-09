@@ -11,6 +11,7 @@ import OverLay from "./OverLay";
 const RoomPage = (props) => {
 
   const { roomId, identity, isRoomHost, showOverlay, connectOnlyWithAudio } = props.app;
+
   useEffect(() => {
     if (!isRoomHost && !roomId) {
       const home_url = window.location.origin;
@@ -18,7 +19,7 @@ const RoomPage = (props) => {
     } else {
       webRTCHandler.getLocalPrevAndInitRoomConnection(isRoomHost, identity, roomId, connectOnlyWithAudio);
     }
-  }, [])
+  }, []);
 
   return (
     <div className="room_container">

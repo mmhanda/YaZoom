@@ -15,6 +15,7 @@ const Message = ({ author, content, sameAuthor, messageCreatedByMe }) => {
 export const Messages = (props) => {
 
   const [messages_, setMessages_] = useState([]);
+
   useEffect(() => {
     setMessages_(props.app.messages);
   }, [props.app.messages]);
